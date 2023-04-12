@@ -1,4 +1,5 @@
 import 'package:ChatGpt/pages/home.dart';
+import 'package:ChatGpt/pages/login.dart';
 import 'package:ChatGpt/pages/profile.dart';
 import 'package:flutter/material.dart';
 
@@ -34,6 +35,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   bool showProfile = false;
+  bool logged = false;
 
   void backHome() {
     setState(() {
@@ -49,29 +51,33 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          backgroundColor: const Color.fromRGBO(32, 34, 34, 1.0),
-          leading: showProfile
-              ? InkWell(
-                  child: const Icon(Icons.arrow_back, color: Colors.white),
-                  onTap: () => backHome(),
-                )
-              : Container(),
-          actions: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: !showProfile
+    return logged
+        ? Scaffold(
+            appBar: AppBar(
+              backgroundColor: const Color.fromRGBO(32, 34, 34, 1.0),
+              leading: showProfile
                   ? InkWell(
-                      child: const Icon(Icons.account_circle_rounded,
-                          color: Colors.white),
-                      onTap: () => openProfile(),
+                      child: const Icon(Icons.arrow_back, color: Colors.white),
+                      onTap: () => backHome(),
                     )
                   : Container(),
+              actions: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: !showProfile
+                      ? InkWell(
+                          child: const Icon(Icons.account_circle_rounded,
+                              color: Colors.white),
+                          onTap: () => openProfile(),
+                        )
+                      : Container(),
+                ),
+              ],
             ),
-          ],
-        ),
-        // body: Profile(),
-        body: !showProfile ? Home() : Profile());
+            // body: Profile(),
+            body: !showProfile ? Home() : Profile())
+        : Scaffold(
+            body: Login(),
+          );
   }
 }
