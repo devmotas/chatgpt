@@ -49,6 +49,23 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  void Function(bool) isLoggedApproved() {
+    return (bool value) {
+      setState(() {
+        logged = value;
+      });
+    };
+  }
+
+  void Function() isExitApp() {
+    return () {
+      setState(() {
+        showProfile = false;
+        logged = false;
+      });
+    };
+  }
+
   @override
   Widget build(BuildContext context) {
     return logged
@@ -75,9 +92,9 @@ class _MyHomePageState extends State<MyHomePage> {
               ],
             ),
             // body: Profile(),
-            body: !showProfile ? Home() : Profile())
+            body: !showProfile ? Home() : Profile(isExitApp: isExitApp()))
         : Scaffold(
-            body: Login(),
+            body: Login(isLoggedApproved: isLoggedApproved()),
           );
   }
 }

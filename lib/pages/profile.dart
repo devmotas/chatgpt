@@ -1,7 +1,54 @@
 import 'package:flutter/material.dart';
 
 class Profile extends StatelessWidget {
-  Profile({Key? key}) : super(key: key);
+  final void Function() isExitApp;
+
+  const Profile({Key? key, required this.isExitApp}) : super(key: key);
+
+  void _exitApp(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text(
+            'Deseja mesmo sair?',
+            style: TextStyle(
+              color: Color.fromRGBO(32, 34, 34, 1.0),
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text(
+                'Sim',
+                style: TextStyle(
+                  color: Color.fromRGBO(204, 204, 204, 1.0),
+                ),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+                isExitApp();
+              },
+            ),
+            TextButton(
+              child: const Text(
+                'Não',
+                style: TextStyle(
+                  color: Color.fromRGBO(32, 34, 34, 1.0),
+                ),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20.0),
+          ),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -9,13 +56,9 @@ class Profile extends StatelessWidget {
       decoration: const BoxDecoration(
         color: Color.fromRGBO(32, 34, 34, 1.0),
       ),
-      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 30),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 30),
       child: Container(
-        decoration: const BoxDecoration(
-          color: Color.fromRGBO(47, 50, 49, 1.0),
-          borderRadius: BorderRadius.all(Radius.circular(8)),
-        ),
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
         child: Column(
           children: [
             Row(
@@ -36,75 +79,111 @@ class Profile extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Container(
-                        child: Column(children: [
-                          Card(
-                            margin: const EdgeInsets.only(bottom: 30),
-                            child: InkWell(
-                              onTap: () {
-                                // Aqui você pode adicionar a navegação para outra tela, por exemplo
+                      Column(children: [
+                        Card(
+                          margin: const EdgeInsets.only(bottom: 30),
+                          child: InkWell(
+                            onTap: () {
+                              // Aqui você pode adicionar a navegação para outra tela, por exemplo
+                            },
+                            splashColor: Colors.grey,
+                            child: const ListTile(
+                              leading: Icon(Icons.person, color: Colors.black),
+                              title: Text(
+                                'Informações usuário',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              trailing: Icon(Icons.arrow_forward_ios),
+                            ),
+                          ),
+                        ),
+                        Card(
+                          margin: const EdgeInsets.only(bottom: 30),
+                          child: InkWell(
+                            onTap: () {
+                              // Aqui você pode adicionar a navegação para outra tela, por exemplo
+                            },
+                            splashColor: Colors.grey,
+                            child: const ListTile(
+                              leading:
+                                  Icon(Icons.security, color: Colors.black),
+                              title: Text(
+                                'Termo de privacidade',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              trailing: Icon(Icons.arrow_forward_ios),
+                            ),
+                          ),
+                        ),
+                        Card(
+                          margin: const EdgeInsets.only(bottom: 30),
+                          child: InkWell(
+                            onTap: () {
+                              // Aqui você pode adicionar a navegação para outra tela, por exemplo
+                            },
+                            splashColor: Colors.grey,
+                            child: const ListTile(
+                              leading:
+                                  Icon(Icons.color_lens, color: Colors.black),
+                              title: Text(
+                                'Mudar Tema',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              trailing: Icon(Icons.arrow_forward_ios),
+                            ),
+                          ),
+                        ),
+                        Center(
+                          child: SizedBox(
+                            width: MediaQuery.sizeOf(context).width * 0.6,
+                            height: 50,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                _exitApp(context);
                               },
-                              splashColor: Colors.grey,
-                              child: const ListTile(
-                                leading:
-                                    Icon(Icons.person, color: Colors.black),
-                                title: Text(
-                                  'Informações usuário',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 20,
-                                    color: Colors.black,
+                              style: ButtonStyle(
+                                backgroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                  Colors.red,
+                                ),
+                                shape: MaterialStateProperty.all<
+                                    RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20),
                                   ),
                                 ),
-                                trailing: Icon(Icons.arrow_forward_ios),
+                              ),
+                              child: const Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    'SAIR',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  SizedBox(width: 8),
+                                  Icon(Icons.exit_to_app, color: Colors.white),
+                                ],
                               ),
                             ),
                           ),
-                          Card(
-                            margin: EdgeInsets.only(bottom: 30),
-                            child: InkWell(
-                              onTap: () {
-                                // Aqui você pode adicionar a navegação para outra tela, por exemplo
-                              },
-                              splashColor: Colors.grey,
-                              child: const ListTile(
-                                leading:
-                                    Icon(Icons.security, color: Colors.black),
-                                title: Text(
-                                  'Termo de privacidade',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 20,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                trailing: Icon(Icons.arrow_forward_ios),
-                              ),
-                            ),
-                          ),
-                          Card(
-                            child: InkWell(
-                              onTap: () {
-                                // Aqui você pode adicionar a navegação para outra tela, por exemplo
-                              },
-                              splashColor: Colors.grey,
-                              child: const ListTile(
-                                leading:
-                                    Icon(Icons.color_lens, color: Colors.black),
-                                title: Text(
-                                  'Mudar Tema',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 20,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                trailing: Icon(Icons.arrow_forward_ios),
-                              ),
-                            ),
-                          ),
-                        ]),
-                      )
+                        )
+                      ])
                     ],
                   ),
                 ),
