@@ -1,3 +1,4 @@
+import 'package:ChatGpt/pages/create_account.dart';
 import 'package:ChatGpt/pages/home.dart';
 import 'package:ChatGpt/pages/login.dart';
 import 'package:ChatGpt/pages/profile.dart';
@@ -15,86 +16,16 @@ class MyApp extends StatelessWidget {
   );
 
   MyApp({super.key});
-
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: MyHomePage(),
+    return MaterialApp(
+      initialRoute: '/login',
+      routes: {
+        '/login': (context) => Login(),
+        '/home': (context) => Home(),
+        '/profile': (context) => Profile(),
+        '/createAccount': (context) => CreateAccount(),
+      },
     );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({
-    super.key,
-  });
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  bool showProfile = false;
-  bool logged = false;
-
-  void backHome() {
-    setState(() {
-      showProfile = false;
-    });
-  }
-
-  void openProfile() {
-    setState(() {
-      showProfile = true;
-    });
-  }
-
-  void Function(bool) isLoggedApproved() {
-    return (bool value) {
-      setState(() {
-        logged = value;
-      });
-    };
-  }
-
-  void Function() isExitApp() {
-    return () {
-      setState(() {
-        showProfile = false;
-        logged = false;
-      });
-    };
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return logged
-        ? Scaffold(
-            appBar: AppBar(
-              backgroundColor: const Color.fromRGBO(32, 34, 34, 1.0),
-              leading: showProfile
-                  ? InkWell(
-                      child: const Icon(Icons.arrow_back, color: Colors.white),
-                      onTap: () => backHome(),
-                    )
-                  : Container(),
-              actions: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: !showProfile
-                      ? InkWell(
-                          child: const Icon(Icons.account_circle_rounded,
-                              color: Colors.white),
-                          onTap: () => openProfile(),
-                        )
-                      : Container(),
-                ),
-              ],
-            ),
-            // body: Profile(),
-            body: !showProfile ? Home() : Profile(isExitApp: isExitApp()))
-        : Scaffold(
-            body: Login(isLoggedApproved: isLoggedApproved()),
-          );
   }
 }

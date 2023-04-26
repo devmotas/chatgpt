@@ -1,26 +1,67 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class CreateAccount extends StatelessWidget {
-  final void Function() backPage;
-
-  CreateAccount({super.key, required this.backPage});
-
   final _formUser = GlobalKey<FormState>();
   String _username = "";
+  String _email = "";
   String _password = "";
   String _confirmPassword = "";
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  bool _userWaiting = false;
+
+  CreateAccount({super.key});
+
+  void _createUser(context) async {
+    _userWaiting = true;
+    _formUser.currentState?.save();
+    const String apiUrl = 'http://192.168.1.102:8800/create-users';
+    final response = await http.post(
+      Uri.parse(apiUrl),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'name': _username,
+        'email': _email,
+        'password': _password,
+      }),
+    );
+    if (response.statusCode == 200) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Usuário criado com sucesso'),
+          duration: Duration(seconds: 3),
+        ),
+      );
+      await Future.delayed(const Duration(seconds: 3));
+      Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+    } else {
+      _userWaiting = false;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Erro ao criar usuário, tente novamente mais tarde.'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+      await Future.delayed(const Duration(seconds: 2));
+    }
+  }
+
+  _checkPassword() {
+    _formUser.currentState?.save();
+    return !(_password == _confirmPassword);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
+        automaticallyImplyLeading: true,
         backgroundColor: const Color.fromRGBO(32, 34, 34, 1.0),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            backPage();
-          },
-        ),
       ),
       body: Container(
         decoration: const BoxDecoration(
@@ -29,6 +70,7 @@ class CreateAccount extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         child: Form(
           key: _formUser,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -40,7 +82,7 @@ class CreateAccount extends StatelessWidget {
               const SizedBox(height: 16),
               TextFormField(
                 decoration: const InputDecoration(
-                  labelText: "E-mail",
+                  labelText: "Nome",
                   labelStyle: TextStyle(color: Colors.white),
                   prefixIcon: Icon(Icons.person, color: Colors.white),
                   focusedBorder: OutlineInputBorder(
@@ -51,12 +93,34 @@ class CreateAccount extends StatelessWidget {
                 style: const TextStyle(color: Colors.white),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return "Por favor insira seu usuário";
+                    return "Por favor insira seu nome";
                   }
                   return null;
                 },
                 onSaved: (value) {
                   _username = value!;
+                },
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                decoration: const InputDecoration(
+                  labelText: "E-mail",
+                  labelStyle: TextStyle(color: Colors.white),
+                  prefixIcon: Icon(Icons.email, color: Colors.white),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide:
+                        BorderSide(color: Color.fromRGBO(47, 50, 49, 1.0)),
+                  ),
+                ),
+                style: const TextStyle(color: Colors.white),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return "Por favor insira seu e-mail";
+                  }
+                  return null;
+                },
+                onSaved: (value) {
+                  _email = value!;
                 },
               ),
               const SizedBox(height: 16),
@@ -96,13 +160,15 @@ class CreateAccount extends StatelessWidget {
                 ),
                 style: const TextStyle(color: Colors.white),
                 validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return "Por favor insira sua senha";
+                  if (_checkPassword()) {
+                    return "As senhas não coincidem, tente novamente!";
+                  } else if (value == null || value.isEmpty) {
+                    return "Por favor confirme a senha";
                   }
                   return null;
                 },
                 onSaved: (value) {
-                  _password = value!;
+                  _confirmPassword = value!;
                 },
               ),
               const SizedBox(height: 32),
@@ -116,10 +182,11 @@ class CreateAccount extends StatelessWidget {
                     ),
                   ),
                   onPressed: () {
-                    // if (_formKey.currentState!.validate()) {
-                    //   _formKey.currentState!.save();
-                    //   // TODO: perform login action
-                    // }
+                    if (_formUser.currentState?.validate() == true &&
+                        !_userWaiting) {
+                      _formUser.currentState?.save();
+                      _createUser(context);
+                    }
                   },
                   child: const Text("Cadastrar"),
                 ),
