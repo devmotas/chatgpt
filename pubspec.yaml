@@ -68,6 +68,9 @@ flutter:
   assets:
     - assets/images/user.png
     - assets/logo/chatgpt_logo.svg
+
+    - .env
+
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

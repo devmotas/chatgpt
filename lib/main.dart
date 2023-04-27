@@ -3,8 +3,10 @@ import 'package:ChatGpt/pages/home.dart';
 import 'package:ChatGpt/pages/login.dart';
 import 'package:ChatGpt/pages/profile.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 void main() async {
+  await dotenv.load();
   runApp(MyApp());
 }
 
