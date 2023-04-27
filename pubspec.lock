@@ -86,6 +86,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.1"
+  flutter_secure_storage:
+    dependency: "direct main"
+    description:
+      name: flutter_secure_storage
+      sha256: "9f3dd2ac3b6875b0fde5b04734789c3ef35ba3965c18e99dd564a7a2f8056df6"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.2.1"
   flutter_svg:
     dependency: "direct main"
     description:
@@ -266,4 +274,4 @@ packages:
     version: "5.4.1"
 sdks:
   dart: ">=3.0.0-218.0.dev <4.0.0"
-  flutter: ">=1.24.0-7.0"
+  flutter: ">=1.26.0-17.6.pre"

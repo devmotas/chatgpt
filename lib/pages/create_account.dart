@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
 class CreateAccount extends StatelessWidget {
@@ -17,9 +18,10 @@ class CreateAccount extends StatelessWidget {
   void _createUser(context) async {
     _userWaiting = true;
     _formUser.currentState?.save();
-    const String apiUrl = 'http://192.168.1.102:8800/create-users';
+    final apiUrl = dotenv.env['API_URL'];
+
     final response = await http.post(
-      Uri.parse(apiUrl),
+      Uri.parse('${apiUrl!}/create-users'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },

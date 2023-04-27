@@ -39,6 +39,7 @@ class _HomeState extends State<Home> {
     http.Response response =
         await http.post(Uri.parse(apiUrl), headers: headers, body: body);
     dynamic jsonResponse = jsonDecode(response.body);
+    print(jsonResponse);
     String text =
         utf8.decode(jsonResponse["choices"][0]["text"].toString().codeUnits);
     String trimmedText = text
