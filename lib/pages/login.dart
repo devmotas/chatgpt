@@ -123,6 +123,9 @@ class _LoginState extends State<Login> {
               onSaved: (value) {
                 _username = value!;
               },
+              onEditingComplete: () {
+                FocusScope.of(context).nextFocus();
+              },
             ),
             const SizedBox(height: 16),
             TextFormField(
@@ -146,6 +149,12 @@ class _LoginState extends State<Login> {
               onSaved: (value) {
                 _password = value!;
               },
+              onEditingComplete: () {
+                if (_formLogin.currentState!.validate() && !_userWaiting) {
+                  _formLogin.currentState?.save();
+                  _login();
+                }
+              },
             ),
             const SizedBox(height: 32),
             SizedBox(
@@ -158,6 +167,8 @@ class _LoginState extends State<Login> {
                   ),
                 ),
                 onPressed: () {
+                  // Navigator.pushNamed(context, '/home');
+
                   if (_formLogin.currentState!.validate() && !_userWaiting) {
                     _formLogin.currentState?.save();
                     _login();

@@ -21,7 +21,7 @@ class CreateAccount extends StatelessWidget {
     final apiUrl = dotenv.env['API_URL'];
 
     final response = await http.post(
-      Uri.parse('${apiUrl!}/create-users'),
+      Uri.parse('${apiUrl!}/create-user'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },

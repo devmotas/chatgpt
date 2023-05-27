@@ -1,9 +1,39 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
 
-class Profile extends StatelessWidget {
-  // final void Function() isExitApp;
-  // const Profile({Key? key, required this.isExitApp}) : super(key: key);
-  //Excluir isso
+import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
+class Profile extends StatefulWidget {
+  final storage = const FlutterSecureStorage();
+
+  @override
+  State<Profile> createState() => _ProfileState();
+}
+
+class _ProfileState extends State<Profile> {
+  Map<String, dynamic> storedUser = {};
+  String name = '';
+  final _textController = TextEditingController();
+  final _focusNode = FocusNode();
+
+  @override
+  void dispose() {
+    _textController.dispose();
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    widget.storage.read(key: 'user').then((value) {
+      setState(() {
+        storedUser = jsonDecode(value!);
+        name = storedUser['name'];
+        print(storedUser['name']);
+      });
+    });
+  }
 
   void _exitApp(BuildContext context) {
     showDialog(
@@ -25,6 +55,7 @@ class Profile extends StatelessWidget {
                 ),
               ),
               onPressed: () {
+                _focusNode.unfocus();
                 Navigator.of(context).pop();
                 Navigator.pushNamedAndRemoveUntil(
                     context, '/login', (route) => false);
@@ -70,11 +101,26 @@ class Profile extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SizedBox(
-                    width: 200,
-                    child: Image.asset(
-                      'assets/images/user.png',
-                    ),
+                  Column(
+                    children: [
+                      SizedBox(
+                        width: 200,
+                        child: Image.asset(
+                          'assets/images/user.png',
+                        ),
+                      ),
+                      Container(
+                        margin: const EdgeInsets.only(top: 30),
+                        child: Text(
+                          'Olá $name',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -90,7 +136,8 @@ class Profile extends StatelessWidget {
                             margin: const EdgeInsets.only(bottom: 30),
                             child: InkWell(
                               onTap: () {
-                                // Aqui você pode adicionar a navegação para outra tela, por exemplo
+                                Navigator.pushNamed(
+                                    context, '/userInformation');
                               },
                               splashColor: Colors.grey,
                               child: const ListTile(
