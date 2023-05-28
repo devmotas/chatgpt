@@ -40,7 +40,7 @@ dependencies:
   appinio_social_share: ^0.2.2
   path_provider: ^2.0.15
   onesignal_flutter: ^3.5.1
-
+  
 
 dev_dependencies:
   flutter_test:

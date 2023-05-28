@@ -129,6 +129,7 @@ class _LoginState extends State<Login> {
             ),
             const SizedBox(height: 16),
             TextFormField(
+              keyboardType: TextInputType.number,
               obscureText: true,
               decoration: const InputDecoration(
                 labelText: "Senha",
