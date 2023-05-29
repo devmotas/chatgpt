@@ -4,19 +4,20 @@ Aplicativo construído para facilitar o uso do ChatGPT em dispositivos móveis, 
 
 ## Requisitos
 
-*   Flutter SDK (versão 3.8.0-10.0.pre.1)
-*   Outras dependências do projeto:
-      http: ^0.13.3
-      animated_text_kit: ^4.2.1
-      flutter_svg: ^0.22.0
-      flutter_dotenv: ^5.0.1
-      flutter_secure_storage: ^4.2.0
-      cupertino_icons: ^1.0.2
-      appinio_social_share: ^0.2.2
-      path_provider: ^2.0.15
-      onesignal_flutter: ^3.5.1
-      flutter_native_splash: ^1.2.0
-      flutter_launcher_icons: ^0.9.1
+* Flutter SDK (versão 3.8.0-10.0.pre.1)
+* Outras dependências do projeto:
+  * http: ^0.13.3
+  * animated_text_kit: ^4.2.1
+  * flutter_svg: ^0.22.0
+  * flutter_dotenv: ^5.0.1
+  * flutter_secure_storage: ^4.2.0
+  * cupertino_icons: ^1.0.2
+  * appinio_social_share: ^0.2.2
+  * path_provider: ^2.0.15
+  * onesignal_flutter: ^3.5.1
+  * flutter_native_splash: ^1.2.0
+  * flutter_launcher_icons: ^0.9.1
+
 
 ## Instalação
 
