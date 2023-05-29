@@ -40,7 +40,24 @@ dependencies:
   appinio_social_share: ^0.2.2
   path_provider: ^2.0.15
   onesignal_flutter: ^3.5.1
+  flutter_native_splash: ^1.2.0
+  flutter_launcher_icons: ^0.9.1
   
+
+flutter_native_splash:
+  color: "#202222"
+  image: "assets/app/ChatGPT.png"
+  android: true
+  ios: true
+
+flutter_icons:
+  image_path: "assets/app/ChatGPT.png"
+  ios: true
+  remove_alpha_ios: true
+  android: launcher_icon
+  adaptive_icon_background: "#FFFFFF"
+  adaptive_icon_foreground: "assets/app/ChatGPT.png"
+
 
 dev_dependencies:
   flutter_test:

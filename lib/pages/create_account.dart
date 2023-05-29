@@ -52,9 +52,14 @@ class CreateAccount extends StatelessWidget {
     }
   }
 
-  _checkPassword() {
+  _checkPasswordEqual() {
     _formUser.currentState?.save();
     return !(_password == _confirmPassword);
+  }
+
+  _checkPassword() {
+    _formUser.currentState?.save();
+    return !(_password == _confirmPassword && _password.length >= 6);
   }
 
   @override
@@ -65,137 +70,159 @@ class CreateAccount extends StatelessWidget {
         automaticallyImplyLeading: true,
         backgroundColor: const Color.fromRGBO(32, 34, 34, 1.0),
       ),
-      body: Container(
-        decoration: const BoxDecoration(
-          color: Color.fromRGBO(32, 34, 34, 1.0),
-        ),
-        padding: const EdgeInsets.all(16),
-        child: Form(
-          key: _formUser,
-          autovalidateMode: AutovalidateMode.onUserInteraction,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(
-                Icons.person,
-                size: 100,
-                color: Colors.white,
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                decoration: const InputDecoration(
-                  labelText: "Nome",
-                  labelStyle: TextStyle(color: Colors.white),
-                  prefixIcon: Icon(Icons.person, color: Colors.white),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide:
-                        BorderSide(color: Color.fromRGBO(47, 50, 49, 1.0)),
+      body: Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              physics: AlwaysScrollableScrollPhysics(),
+              child: Container(
+                height: MediaQuery.of(context).size.height,
+                decoration: const BoxDecoration(
+                  color: Color.fromRGBO(32, 34, 34, 1.0),
+                ),
+                padding: const EdgeInsets.all(16),
+                child: Form(
+                  key: _formUser,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  child: Column(
+                    children: [
+                      const Icon(
+                        Icons.person,
+                        size: 100,
+                        color: Colors.white,
+                      ),
+                      const SizedBox(height: 16),
+                      TextFormField(
+                        decoration: const InputDecoration(
+                          labelText: "Nome",
+                          labelStyle: TextStyle(color: Colors.white),
+                          prefixIcon: Icon(Icons.person, color: Colors.white),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Color.fromRGBO(47, 50, 49, 1.0)),
+                          ),
+                        ),
+                        style: const TextStyle(color: Colors.white),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "Por favor insira seu nome";
+                          }
+                          return null;
+                        },
+                        onSaved: (value) {
+                          _username = value!;
+                        },
+                        onEditingComplete: () {
+                          FocusScope.of(context).nextFocus();
+                        },
+                      ),
+                      const SizedBox(height: 16),
+                      TextFormField(
+                        decoration: const InputDecoration(
+                          labelText: "E-mail",
+                          labelStyle: TextStyle(color: Colors.white),
+                          prefixIcon: Icon(Icons.email, color: Colors.white),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Color.fromRGBO(47, 50, 49, 1.0)),
+                          ),
+                        ),
+                        style: const TextStyle(color: Colors.white),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "Por favor insira seu e-mail";
+                          }
+                          return null;
+                        },
+                        onSaved: (value) {
+                          _email = value!;
+                        },
+                        onEditingComplete: () {
+                          FocusScope.of(context).nextFocus();
+                        },
+                      ),
+                      const SizedBox(height: 16),
+                      TextFormField(
+                        obscureText: true,
+                        keyboardType: TextInputType.number,
+                        decoration: const InputDecoration(
+                          labelText: "Senha",
+                          labelStyle: TextStyle(color: Colors.white),
+                          prefixIcon: Icon(Icons.lock, color: Colors.white),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Color.fromRGBO(47, 50, 49, 1.0)),
+                          ),
+                        ),
+                        style: const TextStyle(color: Colors.white),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "Por favor insira sua senha";
+                          }
+                          return null;
+                        },
+                        onSaved: (value) {
+                          _password = value!;
+                        },
+                        onEditingComplete: () {
+                          FocusScope.of(context).nextFocus();
+                        },
+                      ),
+                      const SizedBox(height: 16),
+                      TextFormField(
+                        keyboardType: TextInputType.number,
+                        obscureText: true,
+                        decoration: const InputDecoration(
+                          labelText: "Confirmar Senha",
+                          labelStyle: TextStyle(color: Colors.white),
+                          prefixIcon: Icon(Icons.lock, color: Colors.white),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Color.fromRGBO(47, 50, 49, 1.0)),
+                          ),
+                        ),
+                        style: const TextStyle(color: Colors.white),
+                        validator: (value) {
+                          if (_checkPasswordEqual()) {
+                            return "As senhas não coincidem, tente novamente!";
+                          } else if (_checkPassword()) {
+                            return "Senha tem que ter no mínimo 6 dígitos.";
+                          } else if (value == null || value.isEmpty) {
+                            return "Por favor confirme a senha";
+                          }
+                          return null;
+                        },
+                        onSaved: (value) {
+                          _confirmPassword = value!;
+                        },
+                      ),
+                      const SizedBox(height: 32),
+                      SizedBox(
+                        width: double.infinity,
+                        height: 50,
+                        child: ElevatedButton(
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all<Color>(
+                              Color.fromRGBO(47, 50, 49, 1.0),
+                            ),
+                          ),
+                          onPressed: () {
+                            _formUser.currentState?.save();
+                            if (_formUser.currentState?.validate() == true &&
+                                !_userWaiting) {
+                              _createUser(context);
+                            }
+                          },
+                          child: const Text("Cadastrar"),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                style: const TextStyle(color: Colors.white),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return "Por favor insira seu nome";
-                  }
-                  return null;
-                },
-                onSaved: (value) {
-                  _username = value!;
-                },
               ),
-              const SizedBox(height: 16),
-              TextFormField(
-                decoration: const InputDecoration(
-                  labelText: "E-mail",
-                  labelStyle: TextStyle(color: Colors.white),
-                  prefixIcon: Icon(Icons.email, color: Colors.white),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide:
-                        BorderSide(color: Color.fromRGBO(47, 50, 49, 1.0)),
-                  ),
-                ),
-                style: const TextStyle(color: Colors.white),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return "Por favor insira seu e-mail";
-                  }
-                  return null;
-                },
-                onSaved: (value) {
-                  _email = value!;
-                },
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                obscureText: true,
-                decoration: const InputDecoration(
-                  labelText: "Senha",
-                  labelStyle: TextStyle(color: Colors.white),
-                  prefixIcon: Icon(Icons.lock, color: Colors.white),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide:
-                        BorderSide(color: Color.fromRGBO(47, 50, 49, 1.0)),
-                  ),
-                ),
-                style: const TextStyle(color: Colors.white),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return "Por favor insira sua senha";
-                  }
-                  return null;
-                },
-                onSaved: (value) {
-                  _password = value!;
-                },
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                obscureText: true,
-                decoration: const InputDecoration(
-                  labelText: "Confirmar Senha",
-                  labelStyle: TextStyle(color: Colors.white),
-                  prefixIcon: Icon(Icons.lock, color: Colors.white),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide:
-                        BorderSide(color: Color.fromRGBO(47, 50, 49, 1.0)),
-                  ),
-                ),
-                style: const TextStyle(color: Colors.white),
-                validator: (value) {
-                  if (_checkPassword()) {
-                    return "As senhas não coincidem, tente novamente!";
-                  } else if (value == null || value.isEmpty) {
-                    return "Por favor confirme a senha";
-                  }
-                  return null;
-                },
-                onSaved: (value) {
-                  _confirmPassword = value!;
-                },
-              ),
-              const SizedBox(height: 32),
-              SizedBox(
-                width: double.infinity,
-                height: 50,
-                child: ElevatedButton(
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(
-                      Color.fromRGBO(47, 50, 49, 1.0),
-                    ),
-                  ),
-                  onPressed: () {
-                    if (_formUser.currentState?.validate() == true &&
-                        !_userWaiting) {
-                      _formUser.currentState?.save();
-                      _createUser(context);
-                    }
-                  },
-                  child: const Text("Cadastrar"),
-                ),
-              ),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }

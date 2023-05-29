@@ -8,12 +8,14 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
 class Login extends StatefulWidget {
+  const Login({super.key});
+
   @override
   State<Login> createState() => _LoginState();
 }
 
 class _LoginState extends State<Login> {
-  final storage = FlutterSecureStorage();
+  final storage = const FlutterSecureStorage();
   final _formLogin = GlobalKey<FormState>();
   String _username = "";
   String _password = "";
@@ -64,7 +66,7 @@ class _LoginState extends State<Login> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text(
-                'Você esta cadastrado mas não tem autorização para entrar.'),
+                'Você está cadastrado, mas não tem autorização para entrar.'),
             duration: Duration(seconds: 3),
           ),
         );

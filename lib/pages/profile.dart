@@ -129,11 +129,10 @@ class _ProfileState extends State<Profile> {
                   child: SizedBox(
                     width: MediaQuery.of(context).size.width,
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Column(children: [
                           Card(
-                            margin: const EdgeInsets.only(bottom: 30),
+                            margin: const EdgeInsets.fromLTRB(0, 30, 0, 30),
                             child: InkWell(
                               onTap: () {
                                 Navigator.pushNamed(
@@ -155,50 +154,50 @@ class _ProfileState extends State<Profile> {
                               ),
                             ),
                           ),
-                          Card(
-                            margin: const EdgeInsets.only(bottom: 30),
-                            child: InkWell(
-                              onTap: () {
-                                // Aqui você pode adicionar a navegação para outra tela, por exemplo
-                              },
-                              splashColor: Colors.grey,
-                              child: const ListTile(
-                                leading:
-                                    Icon(Icons.security, color: Colors.black),
-                                title: Text(
-                                  'Termo de privacidade',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 20,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                trailing: Icon(Icons.arrow_forward_ios),
-                              ),
-                            ),
-                          ),
-                          Card(
-                            margin: const EdgeInsets.only(bottom: 30),
-                            child: InkWell(
-                              onTap: () {
-                                // Aqui você pode adicionar a navegação para outra tela, por exemplo
-                              },
-                              splashColor: Colors.grey,
-                              child: const ListTile(
-                                leading:
-                                    Icon(Icons.color_lens, color: Colors.black),
-                                title: Text(
-                                  'Mudar Tema',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 20,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                trailing: Icon(Icons.arrow_forward_ios),
-                              ),
-                            ),
-                          ),
+                          // Card(
+                          //   margin: const EdgeInsets.only(bottom: 30),
+                          //   child: InkWell(
+                          //     onTap: () {
+                          //       // Aqui você pode adicionar a navegação para outra tela, por exemplo
+                          //     },
+                          //     splashColor: Colors.grey,
+                          //     child: const ListTile(
+                          //       leading:
+                          //           Icon(Icons.security, color: Colors.black),
+                          //       title: Text(
+                          //         'Termo de privacidade',
+                          //         style: TextStyle(
+                          //           fontWeight: FontWeight.bold,
+                          //           fontSize: 20,
+                          //           color: Colors.black,
+                          //         ),
+                          //       ),
+                          //       trailing: Icon(Icons.arrow_forward_ios),
+                          //     ),
+                          //   ),
+                          // ),
+                          // Card(
+                          //   margin: const EdgeInsets.only(bottom: 30),
+                          //   child: InkWell(
+                          //     onTap: () {
+                          //       // Aqui você pode adicionar a navegação para outra tela, por exemplo
+                          //     },
+                          //     splashColor: Colors.grey,
+                          //     child: const ListTile(
+                          //       leading:
+                          //           Icon(Icons.color_lens, color: Colors.black),
+                          //       title: Text(
+                          //         'Mudar Tema',
+                          //         style: TextStyle(
+                          //           fontWeight: FontWeight.bold,
+                          //           fontSize: 20,
+                          //           color: Colors.black,
+                          //         ),
+                          //       ),
+                          //       trailing: Icon(Icons.arrow_forward_ios),
+                          //     ),
+                          //   ),
+                          // ),
                           Center(
                             child: SizedBox(
                               width: MediaQuery.sizeOf(context).width * 0.6,

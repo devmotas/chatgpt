@@ -9,11 +9,11 @@ import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 void main() async {
   await dotenv.load();
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatefulWidget {
-  MyApp({super.key});
+  const MyApp({super.key});
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -39,16 +39,21 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       initialRoute: '/login',
       routes: {
-        '/login': (context) => Login(),
+        '/login': (context) => const Login(),
         '/home': (context) => Home(),
         '/profile': (context) => Profile(),
         '/createAccount': (context) => CreateAccount(),
-        '/userInformation': (context) => UserInformation(),
+        '/userInformation': (context) => const UserInformation(),
       },
     );
   }
 
   Future<void> initPlatformState() async {
-    OneSignal.shared.setAppId(oneSignalAppId!);
+    await OneSignal.shared.setAppId("oneSignalAppId!");
+    await OneSignal.shared.consentGranted(true); // Set privacy consent to true
+    OneSignal.shared
+        .setNotificationOpenedHandler((OSNotificationOpenedResult result) {
+      // Handle notification opened
+    });
   }
 }
