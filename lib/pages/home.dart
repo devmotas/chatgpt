@@ -19,20 +19,20 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  TextEditingController _inputController = TextEditingController();
+  final TextEditingController _inputController = TextEditingController();
   String _answer = "";
   List<Map<String, String>> allData = [];
   final apiKey = dotenv.env['API_KEY'];
   String apiUrl = "https://api.openai.com/v1/completions";
   late FocusNode _focusNode;
-  ScrollController _scrollController = ScrollController();
+  final ScrollController _scrollController = ScrollController();
   AppinioSocialShare appinioSocialShare = AppinioSocialShare();
 
   int pauseDuration = 0;
 
   Future<void> scrollDown() async {
     while (pauseDuration > 0) {
-      await Future.delayed(Duration(milliseconds: 200));
+      await Future.delayed(const Duration(milliseconds: 200));
       if (_scrollController.hasClients) {
         _scrollController.animateTo(
           _scrollController.position.maxScrollExtent,
@@ -41,7 +41,6 @@ class _HomeState extends State<Home> {
         );
       }
       pauseDuration -= 200;
-      print(pauseDuration);
     }
   }
 
@@ -100,7 +99,6 @@ class _HomeState extends State<Home> {
       Map<String, dynamic> decodedResponse = json.decode(responseBody);
 
       if (decodedResponse['type'] == 'text') {
-        print('text');
         trimmedText = (decodedResponse['data'] as String)
             .trim()
             .replaceAll(RegExp(r'^\s+|\s+$'), '')
@@ -115,7 +113,6 @@ class _HomeState extends State<Home> {
         pauseDuration = 30 * trimmedText.length;
         scrollDown();
       } else {
-        print('image');
         setState(() {
           allData.last['answer'] = decodedResponse['data'];
           allData.last['type'] = decodedResponse['type'];
@@ -141,7 +138,6 @@ class _HomeState extends State<Home> {
   void initState() {
     super.initState();
     _focusNode = FocusNode();
-    // shareImage('teste');
   }
 
   void _clearAllData() {

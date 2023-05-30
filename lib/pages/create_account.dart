@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
@@ -210,6 +211,8 @@ class CreateAccount extends StatelessWidget {
                             _formUser.currentState?.save();
                             if (_formUser.currentState?.validate() == true &&
                                 !_userWaiting) {
+                              SystemChannels.textInput
+                                  .invokeMethod('TextInput.hide');
                               _createUser(context);
                             }
                           },

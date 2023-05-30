@@ -30,7 +30,6 @@ class _ProfileState extends State<Profile> {
       setState(() {
         storedUser = jsonDecode(value!);
         name = storedUser['name'];
-        print(storedUser['name']);
       });
     });
   }

@@ -3,6 +3,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
@@ -22,6 +23,8 @@ class _LoginState extends State<Login> {
   bool _userWaiting = false;
 
   void _login() async {
+    SystemChannels.textInput.invokeMethod('TextInput.hide');
+
     setState(() {
       _userWaiting = true;
     });
@@ -40,7 +43,6 @@ class _LoginState extends State<Login> {
     if (response.statusCode == 200) {
       final jsonResponse = jsonDecode(response.body);
       final user = jsonResponse['user'];
-      print(user);
 
       if (user['authorization'] == 1) {
         await storage.write(key: 'user', value: jsonEncode(user));

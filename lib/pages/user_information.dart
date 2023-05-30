@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
@@ -32,7 +33,8 @@ class _UserInformationState extends State<UserInformation> {
   }
 
   void _updatePassword(context) async {
-    print(_isValidInput());
+    SystemChannels.textInput.invokeMethod('TextInput.hide');
+
     final apiUrl = dotenv.env['API_URL'];
 
     final response = await http.put(
@@ -48,12 +50,6 @@ class _UserInformationState extends State<UserInformation> {
 
     if (response.statusCode == 200) {
       Navigator.pop(context);
-      setState(() {
-        _newPasswordController.text = '';
-        _oldPasswordController.text = '';
-        _confirmNewPasswordController.text = '';
-      });
-
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Senha alterada com sucesso.'),
@@ -69,6 +65,11 @@ class _UserInformationState extends State<UserInformation> {
         ),
       );
     }
+    setState(() {
+      _newPasswordController.text = '';
+      _oldPasswordController.text = '';
+      _confirmNewPasswordController.text = '';
+    });
   }
 
   @override
@@ -87,7 +88,6 @@ class _UserInformationState extends State<UserInformation> {
         _name = storedUser['name'];
         _email = storedUser['email'];
         _id = storedUser['id'].toString();
-        print(storedUser['id']);
       });
     });
   }
