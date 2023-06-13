@@ -3,6 +3,7 @@ import 'package:ChatGpt/pages/home.dart';
 import 'package:ChatGpt/pages/login.dart';
 import 'package:ChatGpt/pages/profile.dart';
 import 'package:ChatGpt/pages/user_information.dart';
+import 'package:ChatGpt/pages/welcome.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
@@ -37,8 +38,9 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: '/login',
+      initialRoute: '/welcome',
       routes: {
+        '/welcome': (context) => const Welcome(),
         '/login': (context) => const Login(),
         '/home': (context) => Home(),
         '/profile': (context) => Profile(),

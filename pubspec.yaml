@@ -42,7 +42,7 @@ dependencies:
   onesignal_flutter: ^3.5.1
   flutter_native_splash: ^1.2.0
   flutter_launcher_icons: ^0.9.1
-  
+
 
 flutter_native_splash:
   color: "#202222"
