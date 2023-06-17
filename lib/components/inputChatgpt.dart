@@ -1,21 +1,44 @@
 import 'package:flutter/material.dart';
 
-class InputChatgpt extends StatelessWidget {
-  late FocusNode _focusNode;
-  final TextEditingController _inputController = TextEditingController();
-
-  final ValueChanged<String>? value;
+class InputChatgpt extends StatefulWidget {
+  late TextEditingController inputController = TextEditingController();
+  final VoidCallback onPressed;
 
   InputChatgpt({
-    this.value,
+    required this.inputController,
+    required this.onPressed,
     super.key,
   });
+
+  @override
+  State<InputChatgpt> createState() => _InputChatgptState();
+}
+
+class _InputChatgptState extends State<InputChatgpt> {
+  late FocusNode _focusNode;
+
+  @override
+  void initState() {
+    super.initState();
+    _focusNode = FocusNode();
+  }
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  uploadData() {
+    _focusNode.unfocus();
+    widget.onPressed();
+  }
 
   @override
   Widget build(BuildContext context) {
     return TextField(
       focusNode: _focusNode,
-      controller: _inputController,
+      controller: widget.inputController,
       decoration: InputDecoration(
         filled: true,
         fillColor: Color.fromRGBO(47, 50, 49, 1.0),
@@ -40,7 +63,7 @@ class InputChatgpt extends StatelessWidget {
         suffixIcon: IconButton(
           icon: const Icon(Icons.send),
           color: Colors.white,
-          onPressed: null,
+          onPressed: uploadData,
           // onPressed: _uploadData,
         ),
       ),

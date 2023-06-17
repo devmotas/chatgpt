@@ -104,67 +104,81 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          automaticallyImplyLeading: true,
-          backgroundColor: const Color.fromRGBO(32, 34, 34, 1.0),
-        ),
-        body: Container(
-          decoration: const BoxDecoration(
-            color: Color.fromRGBO(32, 34, 34, 1.0),
-          ),
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              InputDefault(
-                formKey: _formKey1,
-                label: 'E-mail',
-                error: "Por favor insira seu email",
-                iconInput: const Icon(Icons.person, color: Colors.white),
-                onChanged: (value) {
-                  _username = value;
-                },
-                keyboard: TextInputType.emailAddress,
-              ),
-              const SizedBox(height: 30),
-              InputDefault(
-                formKey: _formKey2,
-                label: 'Senha',
-                error: "Por favor insira sua senha",
-                iconInput: const Icon(Icons.lock, color: Colors.white),
-                onChanged: (value) {
-                  _password = value;
-                },
-                keyboard: TextInputType.number,
-              ),
-              const SizedBox(height: 42),
-              ButtonDefault(
-                text: 'ENTRAR',
-                onPressed: () {
-                  if (_formKey1.currentState!.validate() &&
-                      _formKey2.currentState!.validate() &&
-                      !_userWaiting) {
-                    _login();
-                  }
-                },
-                borderOutline: false,
-                disabled: false,
-              ),
-              const SizedBox(height: 30),
-              GestureDetector(
-                onTap: () {
-                  Navigator.pushNamed(context, '/createAccount');
-                },
-                child: const Text(
-                  "Não tem uma conta ?",
-                  style: TextStyle(
-                    color: Colors.white,
-                    decoration: TextDecoration.underline,
+      appBar: AppBar(
+        automaticallyImplyLeading: true,
+        backgroundColor: const Color.fromRGBO(32, 34, 34, 1.0),
+      ),
+      body: Stack(
+        children: [
+          Container(
+            decoration: const BoxDecoration(
+              color: Color.fromRGBO(32, 34, 34, 1.0),
+            ),
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                InputDefault(
+                  formKey: _formKey1,
+                  label: 'E-mail',
+                  error: "Por favor insira seu email",
+                  iconInput: const Icon(Icons.person, color: Colors.white),
+                  onChanged: (value) {
+                    _username = value;
+                  },
+                  keyboard: TextInputType.emailAddress,
+                ),
+                const SizedBox(height: 30),
+                InputDefault(
+                  formKey: _formKey2,
+                  label: 'Senha',
+                  error: "Por favor insira sua senha",
+                  iconInput: const Icon(Icons.lock, color: Colors.white),
+                  onChanged: (value) {
+                    _password = value;
+                  },
+                  keyboard: TextInputType.number,
+                ),
+                const SizedBox(height: 42),
+                ButtonDefault(
+                  text: 'ENTRAR',
+                  onPressed: () {
+                    if (_formKey1.currentState!.validate() &&
+                        _formKey2.currentState!.validate() &&
+                        !_userWaiting) {
+                      _login();
+                    }
+                  },
+                  borderOutline: false,
+                  disabled: false,
+                ),
+                const SizedBox(height: 30),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(context, '/createAccount');
+                  },
+                  child: const Text(
+                    "Não tem uma conta ?",
+                    style: TextStyle(
+                      color: Colors.white,
+                      decoration: TextDecoration.underline,
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ));
+          if (_userWaiting)
+            Positioned.fill(
+              child: Container(
+                color: Colors.black54,
+                child: const Center(
+                  child: CircularProgressIndicator(),
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
   }
 }

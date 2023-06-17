@@ -1,6 +1,8 @@
+import 'package:ChatGpt/pages/change_theme.dart';
 import 'package:ChatGpt/pages/create_account.dart';
 import 'package:ChatGpt/pages/home.dart';
 import 'package:ChatGpt/pages/login.dart';
+import 'package:ChatGpt/pages/privacy_term.dart';
 import 'package:ChatGpt/pages/profile.dart';
 import 'package:ChatGpt/pages/user_information.dart';
 import 'package:ChatGpt/pages/welcome.dart';
@@ -46,6 +48,8 @@ class _MyAppState extends State<MyApp> {
         '/profile': (context) => Profile(),
         '/createAccount': (context) => CreateAccount(),
         '/userInformation': (context) => const UserInformation(),
+        '/privacyTerm': (context) => const PrivacyTerm(),
+        '/changeTheme': (context) => const ChangeTheme(),
       },
     );
   }

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:ChatGpt/components/cardProfile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -130,91 +131,37 @@ class _ProfileState extends State<Profile> {
                     child: Column(
                       children: [
                         Column(children: [
-                          Card(
-                            margin: const EdgeInsets.fromLTRB(0, 30, 0, 30),
-                            child: InkWell(
-                              onTap: () {
-                                Navigator.pushNamed(
-                                    context, '/userInformation');
-                              },
-                              splashColor: Colors.grey,
-                              child: const ListTile(
-                                leading:
-                                    Icon(Icons.person, color: Colors.black),
-                                title: Text(
-                                  'Informações usuário',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 20,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                trailing: Icon(Icons.arrow_forward_ios),
-                              ),
-                            ),
-                          ),
-                          // Card(
-                          //   margin: const EdgeInsets.only(bottom: 30),
-                          //   child: InkWell(
-                          //     onTap: () {
-                          //       // Aqui você pode adicionar a navegação para outra tela, por exemplo
-                          //     },
-                          //     splashColor: Colors.grey,
-                          //     child: const ListTile(
-                          //       leading:
-                          //           Icon(Icons.security, color: Colors.black),
-                          //       title: Text(
-                          //         'Termo de privacidade',
-                          //         style: TextStyle(
-                          //           fontWeight: FontWeight.bold,
-                          //           fontSize: 20,
-                          //           color: Colors.black,
-                          //         ),
-                          //       ),
-                          //       trailing: Icon(Icons.arrow_forward_ios),
-                          //     ),
-                          //   ),
-                          // ),
-                          // Card(
-                          //   margin: const EdgeInsets.only(bottom: 30),
-                          //   child: InkWell(
-                          //     onTap: () {
-                          //       // Aqui você pode adicionar a navegação para outra tela, por exemplo
-                          //     },
-                          //     splashColor: Colors.grey,
-                          //     child: const ListTile(
-                          //       leading:
-                          //           Icon(Icons.color_lens, color: Colors.black),
-                          //       title: Text(
-                          //         'Mudar Tema',
-                          //         style: TextStyle(
-                          //           fontWeight: FontWeight.bold,
-                          //           fontSize: 20,
-                          //           color: Colors.black,
-                          //         ),
-                          //       ),
-                          //       trailing: Icon(Icons.arrow_forward_ios),
-                          //     ),
-                          //   ),
-                          // ),
+                          const SizedBox(height: 16.0),
+                          CardProfile(
+                              text: 'Informações usuário',
+                              router: '/userInformation',
+                              icon: const Icon(Icons.person,
+                                  color: Colors.black)),
+                          const SizedBox(height: 16.0),
+                          CardProfile(
+                              text: 'Termo de privacidade',
+                              router: '/privacyTerm',
+                              icon: const Icon(Icons.security,
+                                  color: Colors.black)),
+                          const SizedBox(height: 16.0),
+                          CardProfile(
+                              text: 'Mudar Tema',
+                              router: '/changeTheme',
+                              icon: const Icon(Icons.color_lens,
+                                  color: Colors.black)),
+                          const SizedBox(height: 30.0),
                           Center(
                             child: SizedBox(
-                              width: MediaQuery.sizeOf(context).width * 0.6,
+                              width: MediaQuery.of(context).size.width * 0.6,
                               height: 50,
                               child: ElevatedButton(
                                 onPressed: () {
                                   _exitApp(context);
                                 },
-                                style: ButtonStyle(
-                                  backgroundColor:
-                                      MaterialStateProperty.all<Color>(
-                                    Colors.red,
-                                  ),
-                                  shape: MaterialStateProperty.all<
-                                      RoundedRectangleBorder>(
-                                    RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.red,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
                                   ),
                                 ),
                                 child: const Row(

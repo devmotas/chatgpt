@@ -7,14 +7,16 @@ class InputDefault extends StatefulWidget {
   final ValueChanged<String>? onChanged;
   final GlobalKey<FormState> formKey;
   final TextInputType? keyboard;
+  String? validatorNonDefault;
 
-  const InputDefault({
+  InputDefault({
     required this.formKey,
     required this.label,
     required this.error,
     this.iconInput,
     this.onChanged,
     this.keyboard,
+    this.validatorNonDefault,
     Key? key,
   }) : super(key: key);
 
@@ -42,8 +44,14 @@ class _InputDefaultState extends State<InputDefault> {
           ),
           style: const TextStyle(color: Colors.white),
           validator: (value) {
-            if (value == null || value.isEmpty) {
-              return widget.error;
+            if (widget.error.isNotEmpty) {
+              if (value == null || value.isEmpty) {
+                return widget.error;
+              }
+            } else {
+              if (widget.validatorNonDefault != null) {
+                return widget.validatorNonDefault;
+              }
             }
             return null;
           },
