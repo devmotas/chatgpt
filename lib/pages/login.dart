@@ -61,13 +61,13 @@ class _LoginState extends State<Login> {
             _userWaiting = false;
           });
           Navigator.pushNamed(context, '/home');
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Logado com sucesso.'),
-              duration: Duration(seconds: 3),
-            ),
-          );
-          await Future.delayed(const Duration(seconds: 3));
+          // ScaffoldMessenger.of(context).showSnackBar(
+          //   const SnackBar(
+          //     content: Text('Logado com sucesso.'),
+          //     duration: Duration(seconds: 3),
+          //   ),
+          // );
+          // await Future.delayed(const Duration(seconds: 3));
         } else {
           setState(() {
             _username = '';
@@ -105,7 +105,7 @@ class _LoginState extends State<Login> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: true,
+        automaticallyImplyLeading: !_userWaiting,
         backgroundColor: const Color.fromRGBO(32, 34, 34, 1.0),
       ),
       body: Stack(

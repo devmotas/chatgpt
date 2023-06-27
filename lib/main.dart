@@ -1,3 +1,4 @@
+import 'package:ChatGpt/pages/change_photo.dart';
 import 'package:ChatGpt/pages/change_theme.dart';
 import 'package:ChatGpt/pages/create_account.dart';
 import 'package:ChatGpt/pages/home.dart';
@@ -50,6 +51,7 @@ class _MyAppState extends State<MyApp> {
         '/userInformation': (context) => const UserInformation(),
         '/privacyTerm': (context) => const PrivacyTerm(),
         '/changeTheme': (context) => const ChangeTheme(),
+        '/changePhoto': (context) => const ChangePhoto(),
       },
     );
   }
