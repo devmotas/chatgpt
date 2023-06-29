@@ -57,6 +57,9 @@ class _LoginState extends State<Login> {
 
         if (user['authorization'] == 1) {
           await storage.write(key: 'user', value: jsonEncode(user));
+          await storage.write(
+              key: 'profile_image', value: user['profile_image']);
+          await storage.write(key: 'isLoggedBefore', value: 'true');
           setState(() {
             _userWaiting = false;
           });

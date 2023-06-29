@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import '../components/buttonDefault.dart';
 
@@ -10,12 +11,29 @@ class Welcome extends StatefulWidget {
 }
 
 class _WelcomeState extends State<Welcome> {
+  final storage = const FlutterSecureStorage();
+
   _login() {
     Navigator.pushNamed(context, '/login');
   }
 
   void _createAccount() {
     Navigator.pushNamed(context, '/createAccount');
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      storage.read(key: 'isLoggedBefore').then((value) {
+        setState(() {
+          print(value);
+          if (value != null && value == 'true') {
+            Navigator.pushNamed(context, '/login');
+          }
+        });
+      });
+    });
   }
 
   @override

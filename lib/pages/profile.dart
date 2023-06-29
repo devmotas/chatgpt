@@ -20,6 +20,7 @@ class _ProfileState extends State<Profile> {
   final _textController = TextEditingController();
   final _focusNode = FocusNode();
   File? _image;
+  Uint8List? _storedImage;
 
   @override
   void dispose() {
@@ -31,10 +32,19 @@ class _ProfileState extends State<Profile> {
   @override
   void initState() {
     super.initState();
+    print('voltou');
     widget.storage.read(key: 'user').then((value) {
       setState(() {
         storedUser = jsonDecode(value!);
         name = storedUser['name'];
+      });
+    });
+    widget.storage.read(key: 'profile_image').then((value) {
+      setState(() {
+        String? profileImageBase64 = value;
+        if (profileImageBase64 != null) {
+          _storedImage = base64Decode(profileImageBase64);
+        }
       });
     });
   }
@@ -72,10 +82,7 @@ class _ProfileState extends State<Profile> {
                 ),
               ),
               onPressed: () {
-                _focusNode.unfocus();
-                Navigator.of(context).pop();
-                Navigator.pushNamedAndRemoveUntil(
-                    context, '/login', (route) => false);
+                exit();
               },
             ),
             TextButton(
@@ -97,6 +104,13 @@ class _ProfileState extends State<Profile> {
         );
       },
     );
+  }
+
+  exit() async {
+    _focusNode.unfocus();
+    Navigator.of(context).pop();
+    Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+    await widget.storage.write(key: 'isLoggedBefore', value: 'false');
   }
 
   @override
@@ -131,23 +145,29 @@ class _ProfileState extends State<Profile> {
                       GestureDetector(
                         onTap: () {
                           Navigator.pushNamed(context, '/changePhoto');
-
-                          // _pickImage(ImageSource.gallery);
                         },
                         child: Stack(
                           alignment: Alignment.topLeft,
                           children: [
-                            SizedBox(
-                              width: 200,
-                              child: Image.asset('assets/images/user.png'),
-                            ),
-                            const Positioned(
-                                right: 50,
-                                bottom: 50,
-                                child: Icon(
-                                  Icons.camera_alt,
-                                  size: 100,
-                                )),
+                            _storedImage != null
+                                ? CircleAvatar(
+                                    backgroundImage: MemoryImage(_storedImage!),
+                                    radius: 150,
+                                  )
+                                : SizedBox(
+                                    width: 200,
+                                    child:
+                                        Image.asset('assets/images/user.png'),
+                                  ),
+                            _storedImage == null
+                                ? const Positioned(
+                                    right: 50,
+                                    bottom: 50,
+                                    child: Icon(
+                                      Icons.camera_alt,
+                                      size: 100,
+                                    ))
+                                : const SizedBox(),
                           ],
                         ),
                       ),

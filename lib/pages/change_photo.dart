@@ -22,6 +22,8 @@ class ChangePhoto extends StatefulWidget {
 class _ChangePhotoState extends State<ChangePhoto> {
   File? _image;
   Map<String, dynamic> _user = {};
+  Uint8List? _storedImage;
+  final apiUrl = dotenv.env['API_URL'];
 
   Future _pickImage(ImageSource source) async {
     try {
@@ -35,6 +37,12 @@ class _ChangePhotoState extends State<ChangePhoto> {
     } on PlatformException catch (e) {
       print(e);
     }
+  }
+
+  Future<String> convertImageToBase64(File imageFile) async {
+    List<int> bytes = await imageFile.readAsBytes();
+    String base64Image = base64Encode(bytes);
+    return base64Image;
   }
 
   Future<File?> _cropImage({required File imageFile}) async {
@@ -85,20 +93,26 @@ class _ChangePhotoState extends State<ChangePhoto> {
   }
 
   void _updatePhoto(context) async {
-    final apiUrl = dotenv.env['API_URL'];
-
     String? base64Image = imageToBase64(_image);
+    print(base64Image);
+
     if (base64Image != null && base64Image.isNotEmpty) {
       final response = await http.put(
-        Uri.parse('$apiUrl/update-password/${_user['id'].toString()}'),
+        Uri.parse('$apiUrl/update-user/${_user['id'].toString()}'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
-        body: jsonEncode(<String, String>{'profilePhoto': base64Image}),
+        body: jsonEncode(<String, String>{
+          'name': _user['name'],
+          'email': _user['email'],
+          'profile_image': base64Image,
+        }),
       );
 
       if (response.statusCode == 200) {
-        Navigator.pop(context);
+        await widget.storage.write(key: 'profile_image', value: base64Image);
+        Navigator.pushReplacementNamed(context, '/profile');
+
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Foto alterada com sucesso.'),
@@ -106,7 +120,8 @@ class _ChangePhotoState extends State<ChangePhoto> {
           ),
         );
       } else {
-        Navigator.pop(context);
+        Navigator.pushReplacementNamed(context, '/profile');
+
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Erro ao alterar foto.'),
@@ -123,6 +138,14 @@ class _ChangePhotoState extends State<ChangePhoto> {
     widget.storage.read(key: 'user').then((value) {
       setState(() {
         _user = jsonDecode(value!);
+      });
+    });
+    widget.storage.read(key: 'profile_image').then((value) {
+      setState(() {
+        String? profileImageBase64 = value;
+        if (profileImageBase64 != null) {
+          _storedImage = base64Decode(profileImageBase64);
+        }
       });
     });
   }
@@ -153,12 +176,19 @@ class _ChangePhotoState extends State<ChangePhoto> {
                       backgroundImage: FileImage(_image!),
                       radius: 150,
                     )
-                  : Image.asset('assets/images/user.png'),
+                  : _storedImage != null && _image == null
+                      ? CircleAvatar(
+                          backgroundImage: MemoryImage(_storedImage!),
+                          radius: 150,
+                        )
+                      : Image.asset('assets/images/user.png'),
             ),
             Column(
               children: [
                 ButtonDefault(
-                    text: (_image != null ? 'Alterar Foto' : 'Selecionar Foto'),
+                    text: (_image != null || _storedImage != null
+                        ? 'Alterar Foto'
+                        : 'Selecionar Foto'),
                     onPressed: () {
                       _showImagePickerModal();
                     },
