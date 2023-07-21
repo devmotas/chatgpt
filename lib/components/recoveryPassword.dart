@@ -61,92 +61,94 @@ class RecoveryPassword extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.fromLTRB(
-          16, 16, 16, 16 + MediaQuery.of(context).viewInsets.bottom),
-      child: Form(
-        key: _formKey,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Text(
-              'Alteração de Senha',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 18.0,
+    return Scaffold(
+      body: Padding(
+        padding: EdgeInsets.fromLTRB(
+            16, 16, 16, 16 + MediaQuery.of(context).viewInsets.bottom),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                'Alteração de Senha',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18.0,
+                ),
               ),
-            ),
-            const SizedBox(height: 16.0),
-            TextFormField(
-              keyboardType: TextInputType.number,
-              controller: _oldPasswordController,
-              obscureText: true,
-              decoration: const InputDecoration(
-                labelText: 'Senha antiga',
-              ),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Por favor insira sua senha antiga!';
-                }
-                return null;
-              },
-              onEditingComplete: () {
-                FocusScope.of(context).nextFocus();
-              },
-            ),
-            const SizedBox(height: 16.0),
-            TextFormField(
-              keyboardType: TextInputType.number,
-              controller: _newPasswordController,
-              obscureText: true,
-              decoration: const InputDecoration(
-                labelText: 'Nova senha',
-              ),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Por favor insira sua senha nova!';
-                }
-                return null;
-              },
-              onEditingComplete: () {
-                FocusScope.of(context).nextFocus();
-              },
-            ),
-            TextFormField(
-              keyboardType: TextInputType.number,
-              controller: _confirmNewPasswordController,
-              obscureText: true,
-              decoration: const InputDecoration(
-                labelText: 'Confirmar nova senha',
-              ),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'A nova foi digitada errada!';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 16.0),
-            SizedBox(
-              width: double.infinity,
-              height: 50,
-              child: ElevatedButton(
-                style: ButtonStyle(
-                    backgroundColor: _isValidInput()
-                        ? MaterialStateProperty.all<Color>(
-                            const Color.fromRGBO(47, 50, 49, 1.0),
-                          )
-                        : MaterialStateProperty.all<Color>(
-                            Color.fromARGB(255, 17, 17, 17),
-                          )),
-                onPressed: () {
-                  _formKey.currentState!.validate();
-                  _isValidInput() ? _updatePassword(context) : null;
+              const SizedBox(height: 16.0),
+              TextFormField(
+                keyboardType: TextInputType.number,
+                controller: _oldPasswordController,
+                obscureText: true,
+                decoration: const InputDecoration(
+                  labelText: 'Senha antiga',
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Por favor insira sua senha antiga!';
+                  }
+                  return null;
                 },
-                child: const Text("Alterar"),
+                onEditingComplete: () {
+                  FocusScope.of(context).nextFocus();
+                },
               ),
-            ),
-          ],
+              const SizedBox(height: 16.0),
+              TextFormField(
+                keyboardType: TextInputType.number,
+                controller: _newPasswordController,
+                obscureText: true,
+                decoration: const InputDecoration(
+                  labelText: 'Nova senha',
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Por favor insira sua senha nova!';
+                  }
+                  return null;
+                },
+                onEditingComplete: () {
+                  FocusScope.of(context).nextFocus();
+                },
+              ),
+              TextFormField(
+                keyboardType: TextInputType.number,
+                controller: _confirmNewPasswordController,
+                obscureText: true,
+                decoration: const InputDecoration(
+                  labelText: 'Confirmar nova senha',
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'A nova foi digitada errada!';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16.0),
+              SizedBox(
+                width: double.infinity,
+                height: 50,
+                child: ElevatedButton(
+                  style: ButtonStyle(
+                      backgroundColor: _isValidInput()
+                          ? MaterialStateProperty.all<Color>(
+                              const Color.fromRGBO(47, 50, 49, 1.0),
+                            )
+                          : MaterialStateProperty.all<Color>(
+                              Color.fromARGB(255, 17, 17, 17),
+                            )),
+                  onPressed: () {
+                    _formKey.currentState!.validate();
+                    _isValidInput() ? _updatePassword(context) : null;
+                  },
+                  child: const Text("Alterar"),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

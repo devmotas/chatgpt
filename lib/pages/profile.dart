@@ -1,11 +1,9 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:ChatGpt/components/cardProfile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:image_picker/image_picker.dart';
 
 class Profile extends StatefulWidget {
   final storage = const FlutterSecureStorage();
@@ -19,7 +17,6 @@ class _ProfileState extends State<Profile> {
   String name = '';
   final _textController = TextEditingController();
   final _focusNode = FocusNode();
-  File? _image;
   Uint8List? _storedImage;
 
   @override
@@ -44,22 +41,24 @@ class _ProfileState extends State<Profile> {
         String? profileImageBase64 = value;
         if (profileImageBase64 != null) {
           _storedImage = base64Decode(profileImageBase64);
+          // print(_storedImage!.length);
         }
       });
     });
   }
 
-  Future _pickImage(ImageSource source) async {
-    try {
-      final image = await ImagePicker().pickImage(source: source);
-      if (image == null) return;
-      File? img = File(image.path);
+  @override
+  void didUpdateWidget(Profile oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    widget.storage.read(key: 'profile_image').then((value) {
       setState(() {
-        _image = img;
+        String? profileImageBase64 = value;
+        if (profileImageBase64 != null) {
+          _storedImage = base64Decode(profileImageBase64);
+          print(_storedImage!.length);
+        }
       });
-    } on PlatformException catch (e) {
-      print(e);
-    }
+    });
   }
 
   void _exitApp(BuildContext context) {
@@ -110,7 +109,10 @@ class _ProfileState extends State<Profile> {
     _focusNode.unfocus();
     Navigator.of(context).pop();
     Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+    await widget.storage.delete(key: 'dataUser');
     await widget.storage.write(key: 'isLoggedBefore', value: 'false');
+    await widget.storage.delete(key: 'user');
+    await widget.storage.delete(key: 'profile_image');
   }
 
   @override

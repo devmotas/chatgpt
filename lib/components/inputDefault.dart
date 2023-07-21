@@ -8,6 +8,7 @@ class InputDefault extends StatefulWidget {
   final GlobalKey<FormState> formKey;
   final TextInputType? keyboard;
   String? validatorNonDefault;
+  final TextEditingController? controller;
 
   InputDefault({
     required this.formKey,
@@ -17,6 +18,7 @@ class InputDefault extends StatefulWidget {
     this.onChanged,
     this.keyboard,
     this.validatorNonDefault,
+    this.controller,
     Key? key,
   }) : super(key: key);
 
@@ -26,6 +28,11 @@ class InputDefault extends StatefulWidget {
 
 class _InputDefaultState extends State<InputDefault> {
   String _value = '';
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,6 +50,7 @@ class _InputDefaultState extends State<InputDefault> {
             ),
           ),
           style: const TextStyle(color: Colors.white),
+          controller: widget.controller,
           validator: (value) {
             if (widget.error.isNotEmpty) {
               if (value == null || value.isEmpty) {

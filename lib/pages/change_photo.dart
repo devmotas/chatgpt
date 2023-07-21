@@ -111,7 +111,10 @@ class _ChangePhotoState extends State<ChangePhoto> {
 
       if (response.statusCode == 200) {
         await widget.storage.write(key: 'profile_image', value: base64Image);
-        Navigator.pushReplacementNamed(context, '/profile');
+
+        Navigator.pushNamedAndRemoveUntil(
+            context, '/profile', ModalRoute.withName('/home'),
+            arguments: {'photoUpdated': true});
 
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(

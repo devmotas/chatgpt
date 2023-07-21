@@ -22,11 +22,43 @@ class _LoginState extends State<Login> {
   final storage = const FlutterSecureStorage();
   final GlobalKey<FormState> _formKey1 = GlobalKey<FormState>();
   final GlobalKey<FormState> _formKey2 = GlobalKey<FormState>();
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
   String _username = "";
   String _password = "";
   bool _userWaiting = false;
+  bool _saveData = false;
+
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      _username = '';
+      _password = '';
+      _saveData = false;
+      _usernameController.text = _username;
+      _passwordController.text = _password;
+    });
+    storage.read(key: 'dataUser').then((value) {
+      if (value != null) {
+        Map<String, dynamic> userCredentials = jsonDecode(value);
+        setState(() {
+          _username = userCredentials['email'];
+          _password = userCredentials['password'];
+          _saveData = true;
+          _usernameController.text = _username;
+          _passwordController.text = _password;
+        });
+        // _login();
+      } else {
+        _saveData = false;
+      }
+    });
+  }
 
   void _login() async {
+    print(_username);
+    print(_password);
     _formKey1.currentState?.save();
     _formKey2.currentState?.save();
     SystemChannels.textInput.invokeMethod('TextInput.hide');
@@ -39,17 +71,15 @@ class _LoginState extends State<Login> {
       });
 
       final apiUrl = dotenv.env['API_URL'];
-
-      final response = await http.post(
-        Uri.parse('$apiUrl/login'),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: jsonEncode(<String, String>{
-          'email': _username,
-          'password': _password,
-        }),
-      );
+      final dataUser = jsonEncode(<String, String>{
+        'email': _username,
+        'password': _password,
+      });
+      final response = await http.post(Uri.parse('$apiUrl/login'),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+          body: dataUser);
 
       if (response.statusCode == 200) {
         final jsonResponse = jsonDecode(response.body);
@@ -60,17 +90,19 @@ class _LoginState extends State<Login> {
           await storage.write(
               key: 'profile_image', value: user['profile_image']);
           await storage.write(key: 'isLoggedBefore', value: 'true');
+
+          if (_saveData) {
+            await storage.write(key: 'dataUser', value: dataUser);
+          } else {
+            await storage.delete(key: 'dataUser');
+          }
           setState(() {
             _userWaiting = false;
+            _username = '';
+            _password = '';
+            _saveData = false;
           });
           Navigator.pushNamed(context, '/home');
-          // ScaffoldMessenger.of(context).showSnackBar(
-          //   const SnackBar(
-          //     content: Text('Logado com sucesso.'),
-          //     duration: Duration(seconds: 3),
-          //   ),
-          // );
-          // await Future.delayed(const Duration(seconds: 3));
         } else {
           setState(() {
             _username = '';
@@ -130,6 +162,7 @@ class _LoginState extends State<Login> {
                     _username = value;
                   },
                   keyboard: TextInputType.emailAddress,
+                  controller: _usernameController,
                 ),
                 const SizedBox(height: 30),
                 InputDefault(
@@ -141,6 +174,27 @@ class _LoginState extends State<Login> {
                     _password = value;
                   },
                   keyboard: TextInputType.number,
+                  controller: _passwordController,
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  children: [
+                    Switch(
+                      value: _saveData,
+                      activeColor: Colors.grey,
+                      onChanged: (bool value) {
+                        setState(() {
+                          _saveData = value;
+                        });
+                      },
+                    ),
+                    const Text(
+                      'Lembrar de mim',
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    )
+                  ],
                 ),
                 const SizedBox(height: 42),
                 ButtonDefault(
