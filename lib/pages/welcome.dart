@@ -27,7 +27,6 @@ class _WelcomeState extends State<Welcome> {
     WidgetsBinding.instance?.addPostFrameCallback((_) {
       storage.read(key: 'isLoggedBefore').then((value) {
         setState(() {
-          print(value);
           if (value != null && value == 'true') {
             Navigator.pushNamed(context, '/login');
           }

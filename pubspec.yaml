@@ -48,18 +48,18 @@ dependencies:
 
 
 flutter_native_splash:
-  color: "#202222"
-  image: "assets/app/ChatGPT.png"
+  color: "#333434"
+  image: "assets/app/splash.png"
   android: true
   ios: true
 
 flutter_icons:
-  image_path: "assets/app/ChatGPT.png"
+  image_path: "assets/app/icon.png"
   ios: true
   remove_alpha_ios: true
   android: launcher_icon
   adaptive_icon_background: "#FFFFFF"
-  adaptive_icon_foreground: "assets/app/ChatGPT.png"
+  adaptive_icon_foreground: "assets/app/icone-app.png"
 
 
 dev_dependencies:

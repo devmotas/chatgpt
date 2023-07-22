@@ -1,6 +1,5 @@
 mixin ValidationsMixing {
   String? isNotEmpty(String? value, [String? message]) {
-    print(value);
     if (value!.isEmpty) return message ?? "Este campo é obrigatório si";
     return null;
   }

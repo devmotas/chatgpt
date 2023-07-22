@@ -29,7 +29,6 @@ class _ProfileState extends State<Profile> {
   @override
   void initState() {
     super.initState();
-    print('voltou');
     widget.storage.read(key: 'user').then((value) {
       setState(() {
         storedUser = jsonDecode(value!);
@@ -41,7 +40,6 @@ class _ProfileState extends State<Profile> {
         String? profileImageBase64 = value;
         if (profileImageBase64 != null) {
           _storedImage = base64Decode(profileImageBase64);
-          // print(_storedImage!.length);
         }
       });
     });
@@ -55,7 +53,6 @@ class _ProfileState extends State<Profile> {
         String? profileImageBase64 = value;
         if (profileImageBase64 != null) {
           _storedImage = base64Decode(profileImageBase64);
-          print(_storedImage!.length);
         }
       });
     });

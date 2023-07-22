@@ -94,7 +94,6 @@ class _ChangePhotoState extends State<ChangePhoto> {
 
   void _updatePhoto(context) async {
     String? base64Image = imageToBase64(_image);
-    print(base64Image);
 
     if (base64Image != null && base64Image.isNotEmpty) {
       final response = await http.put(
