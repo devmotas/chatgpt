@@ -57,8 +57,6 @@ class _LoginState extends State<Login> {
   }
 
   void _login() async {
-    print(_username);
-    print(_password);
     _formKey1.currentState?.save();
     _formKey2.currentState?.save();
     SystemChannels.textInput.invokeMethod('TextInput.hide');

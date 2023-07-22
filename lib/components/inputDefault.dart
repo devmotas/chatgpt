@@ -1,6 +1,7 @@
+import 'package:ChatGpt/mixins/validations_mixing.dart';
 import 'package:flutter/material.dart';
 
-class InputDefault extends StatefulWidget {
+class InputDefault extends StatefulWidget with ValidationsMixing {
   final String error;
   final String label;
   final Icon? iconInput;
@@ -9,6 +10,9 @@ class InputDefault extends StatefulWidget {
   final TextInputType? keyboard;
   String? validatorNonDefault;
   final TextEditingController? controller;
+  final Color? colorText;
+  final Color? colorLabel;
+  final Color? colorBorder;
 
   InputDefault({
     required this.formKey,
@@ -19,6 +23,9 @@ class InputDefault extends StatefulWidget {
     this.keyboard,
     this.validatorNonDefault,
     this.controller,
+    this.colorText,
+    this.colorLabel,
+    this.colorBorder,
     Key? key,
   }) : super(key: key);
 
@@ -43,13 +50,15 @@ class _InputDefaultState extends State<InputDefault> {
           keyboardType: widget.keyboard,
           decoration: InputDecoration(
             labelText: widget.label,
-            labelStyle: const TextStyle(color: Colors.white),
+            labelStyle: TextStyle(
+                color: widget.colorLabel ?? Colors.white), // Wrap in TextStyle
             prefixIcon: widget.iconInput ?? const SizedBox(),
-            focusedBorder: const OutlineInputBorder(
-              borderSide: BorderSide(color: Color.fromRGBO(47, 50, 49, 1.0)),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                  color: widget.colorBorder ?? Color.fromRGBO(47, 50, 49, 1.0)),
             ),
           ),
-          style: const TextStyle(color: Colors.white),
+          style: TextStyle(color: widget.colorText ?? Colors.white),
           controller: widget.controller,
           validator: (value) {
             if (widget.error.isNotEmpty) {
@@ -57,9 +66,7 @@ class _InputDefaultState extends State<InputDefault> {
                 return widget.error;
               }
             } else {
-              if (widget.validatorNonDefault != null) {
-                return widget.validatorNonDefault;
-              }
+              return widget.validatorNonDefault;
             }
             return null;
           },
