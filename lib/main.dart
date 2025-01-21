@@ -1,14 +1,15 @@
-import 'package:ChatGpt/pages/change_photo.dart';
-import 'package:ChatGpt/pages/change_theme.dart';
-import 'package:ChatGpt/pages/create_account.dart';
-import 'package:ChatGpt/pages/home.dart';
-import 'package:ChatGpt/pages/login.dart';
-import 'package:ChatGpt/pages/privacy_term.dart';
-import 'package:ChatGpt/pages/profile.dart';
-import 'package:ChatGpt/pages/user_information.dart';
-import 'package:ChatGpt/pages/welcome.dart';
+import 'package:new_chatgpt/pages/change_photo.dart';
+import 'package:new_chatgpt/pages/change_theme.dart';
+import 'package:new_chatgpt/pages/create_account.dart';
+import 'package:new_chatgpt/pages/home.dart';
+import 'package:new_chatgpt/pages/login.dart';
+import 'package:new_chatgpt/pages/privacy_term.dart';
+import 'package:new_chatgpt/pages/profile.dart';
+import 'package:new_chatgpt/pages/user_information.dart';
+import 'package:new_chatgpt/pages/welcome.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:new_chatgpt/pages/welcome.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 void main() async {
@@ -24,7 +25,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final oneSignalAppId = dotenv.env['API_KEY'];
+  // final oneSignalAppId = dotenv.env['API_KEY'];
 
   @override
   void initState() {
@@ -41,7 +42,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: '/welcome',
+      initialRoute: '/home',
       routes: {
         '/welcome': (context) => const Welcome(),
         '/login': (context) => const Login(),
@@ -57,11 +58,11 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> initPlatformState() async {
-    await OneSignal.shared.setAppId("oneSignalAppId!");
-    await OneSignal.shared.consentGranted(true); // Set privacy consent to true
-    OneSignal.shared
-        .setNotificationOpenedHandler((OSNotificationOpenedResult result) {
-      // Handle notification opened
-    });
+    //   await OneSignal.shared.setAppId("oneSignalAppId!");
+    //   await OneSignal.shared.consentGranted(true); // Set privacy consent to true
+    //   OneSignal.shared
+    //       .setNotificationOpenedHandler((OSNotificationOpenedResult result) {
+    //     // Handle notification opened
+    //   });
   }
 }

@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:ChatGpt/components/answersQuestions.dart';
-import 'package:ChatGpt/components/clearChat.dart';
+import 'package:new_chatgpt/components/answersQuestions.dart';
+import 'package:new_chatgpt/components/clearChat.dart';
 import 'package:appinio_social_share/appinio_social_share.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';

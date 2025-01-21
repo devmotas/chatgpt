@@ -1,4 +1,4 @@
-import 'package:ChatGpt/mixins/validations_mixing.dart';
+import 'package:new_chatgpt/mixins/validations_mixing.dart';
 import 'package:flutter/material.dart';
 
 class InputDefault extends StatefulWidget with ValidationsMixing {

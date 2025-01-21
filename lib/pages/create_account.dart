@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:ChatGpt/components/buttonDefault.dart';
-import 'package:ChatGpt/components/inputDefault.dart';
+import 'package:new_chatgpt/components/buttonDefault.dart';
+import 'package:new_chatgpt/components/inputDefault.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';

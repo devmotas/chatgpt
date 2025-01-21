@@ -1,8 +1,8 @@
 import 'dart:convert';
 
-import 'package:ChatGpt/components/buttonDefault.dart';
-import 'package:ChatGpt/components/cardInformationUser.dart';
-import 'package:ChatGpt/components/recoveryPassword.dart';
+import 'package:new_chatgpt/components/buttonDefault.dart';
+import 'package:new_chatgpt/components/cardInformationUser.dart';
+import 'package:new_chatgpt/components/recoveryPassword.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 

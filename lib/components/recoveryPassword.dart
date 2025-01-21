@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:ChatGpt/components/inputDefault.dart';
-import 'package:ChatGpt/mixins/validations_mixing.dart';
+import 'package:new_chatgpt/components/inputDefault.dart';
+import 'package:new_chatgpt/mixins/validations_mixing.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';

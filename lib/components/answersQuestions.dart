@@ -1,5 +1,5 @@
-import 'package:ChatGpt/components/answers.dart';
-import 'package:ChatGpt/components/questions.dart';
+import 'package:new_chatgpt/components/answers.dart';
+import 'package:new_chatgpt/components/questions.dart';
 import 'package:flutter/material.dart';
 
 class AnswersQuestions extends StatelessWidget {
