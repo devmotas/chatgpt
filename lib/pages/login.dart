@@ -83,7 +83,7 @@ class _LoginState extends State<Login> {
         final jsonResponse = jsonDecode(response.body);
         final user = jsonResponse['user'];
 
-        if (user['authorization'] == 1) {
+        if (user['authorization'] == 0 || user['authorization'] == 1) {
           await storage.write(key: 'user', value: jsonEncode(user));
           await storage.write(
               key: 'profile_image', value: user['profile_image']);
@@ -140,87 +140,110 @@ class _LoginState extends State<Login> {
       appBar: AppBar(
         automaticallyImplyLeading: !_userWaiting,
         backgroundColor: const Color.fromRGBO(32, 34, 34, 1.0),
+        iconTheme: const IconThemeData(
+          color: Colors.white,
+        ),
       ),
+      resizeToAvoidBottomInset: true, // Garante ajuste ao teclado
       body: Stack(
         children: [
           Container(
+            padding: const EdgeInsets.only(left: 20, right: 20),
             decoration: const BoxDecoration(
               color: Color.fromRGBO(32, 34, 34, 1.0),
             ),
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                InputDefault(
-                  formKey: _formKey1,
-                  label: 'E-mail',
-                  error: "Por favor insira seu email",
-                  iconInput: const Icon(Icons.person, color: Colors.white),
-                  onChanged: (value) {
-                    _username = value;
-                  },
-                  keyboard: TextInputType.emailAddress,
-                  controller: _usernameController,
-                ),
-                const SizedBox(height: 30),
-                InputDefault(
-                  formKey: _formKey2,
-                  label: 'Senha',
-                  error: "Por favor insira sua senha",
-                  iconInput: const Icon(Icons.lock, color: Colors.white),
-                  onChanged: (value) {
-                    _password = value;
-                  },
-                  keyboard: TextInputType.number,
-                  controller: _passwordController,
-                ),
-                const SizedBox(height: 10),
-                Row(
-                  children: [
-                    Switch(
-                      value: _saveData,
-                      activeColor: Colors.grey,
-                      onChanged: (bool value) {
-                        setState(() {
-                          _saveData = value;
-                        });
-                      },
+            child: LayoutBuilder(
+              // Calcula o espaço disponível
+              builder: (context, constraints) {
+                return SingleChildScrollView(
+                  child: ConstrainedBox(
+                    // Garante que o conteúdo ocupe toda a altura
+                    constraints: BoxConstraints(
+                      minHeight: constraints
+                          .maxHeight, // Altura mínima = altura da tela
                     ),
-                    const Text(
-                      'Lembrar de mim',
-                      style: TextStyle(
-                        color: Colors.white,
+                    child: IntrinsicHeight(
+                      // Expande os widgets filhos
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          InputDefault(
+                            formKey: _formKey1,
+                            label: 'E-mail',
+                            error: "Por favor insira seu email",
+                            iconInput:
+                                const Icon(Icons.person, color: Colors.white),
+                            onChanged: (value) {
+                              _username = value;
+                            },
+                            keyboard: TextInputType.emailAddress,
+                            controller: _usernameController,
+                          ),
+                          const SizedBox(height: 30),
+                          InputDefault(
+                            formKey: _formKey2,
+                            label: 'Senha',
+                            error: "Por favor insira sua senha",
+                            iconInput:
+                                const Icon(Icons.lock, color: Colors.white),
+                            onChanged: (value) {
+                              _password = value;
+                            },
+                            keyboard: TextInputType.number,
+                            controller: _passwordController,
+                          ),
+                          const SizedBox(height: 10),
+                          Row(
+                            children: [
+                              Switch(
+                                value: _saveData,
+                                activeColor: Colors.grey,
+                                onChanged: (bool value) {
+                                  setState(() {
+                                    _saveData = value;
+                                  });
+                                },
+                              ),
+                              const Text(
+                                'Lembrar de mim',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                ),
+                              )
+                            ],
+                          ),
+                          const SizedBox(height: 42),
+                          ButtonDefault(
+                            text: 'ENTRAR',
+                            onPressed: () {
+                              if (_formKey1.currentState!.validate() &&
+                                  _formKey2.currentState!.validate() &&
+                                  !_userWaiting) {
+                                _login();
+                              }
+                            },
+                            borderOutline: false,
+                            disabled: false,
+                          ),
+                          const SizedBox(height: 30),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.pushNamed(context, '/createAccount');
+                            },
+                            child: const Text(
+                              "Não tem uma conta ?",
+                              style: TextStyle(
+                                color: Colors.white,
+                                decoration: TextDecoration.underline,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    )
-                  ],
-                ),
-                const SizedBox(height: 42),
-                ButtonDefault(
-                  text: 'ENTRAR',
-                  onPressed: () {
-                    if (_formKey1.currentState!.validate() &&
-                        _formKey2.currentState!.validate() &&
-                        !_userWaiting) {
-                      _login();
-                    }
-                  },
-                  borderOutline: false,
-                  disabled: false,
-                ),
-                const SizedBox(height: 30),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pushNamed(context, '/createAccount');
-                  },
-                  child: const Text(
-                    "Não tem uma conta ?",
-                    style: TextStyle(
-                      color: Colors.white,
-                      decoration: TextDecoration.underline,
                     ),
                   ),
-                ),
-              ],
+                );
+              },
             ),
           ),
           if (_userWaiting)

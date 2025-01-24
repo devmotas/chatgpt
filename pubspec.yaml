@@ -24,6 +24,20 @@ dependencies:
   onesignal_flutter: ^5.2.9
   path_provider: ^2.1.5
 
+flutter_native_splash:
+  color: "#333434"
+  image: "assets/app/splash.png"
+  android: true
+  ios: true
+
+flutter_icons:
+  image_path: "assets/app/icon.png"
+  ios: true
+  remove_alpha_ios: true
+  android: launcher_icon
+  adaptive_icon_background: "#FFFFFF"
+  adaptive_icon_foreground: "assets/app/icone-app.png"
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -33,3 +47,5 @@ flutter:
   uses-material-design: true
   assets:
     - .env
+    - assets/images/user.png
+    - assets/logo/chatgpt_logo.svg

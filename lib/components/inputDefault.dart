@@ -8,7 +8,7 @@ class InputDefault extends StatefulWidget with ValidationsMixing {
   final ValueChanged<String>? onChanged;
   final GlobalKey<FormState> formKey;
   final TextInputType? keyboard;
-  String? validatorNonDefault;
+  final String? Function()? validatorNonDefault; // Alterado para aceitar função
   final TextEditingController? controller;
   final Color? colorText;
   final Color? colorLabel;
@@ -65,8 +65,9 @@ class _InputDefaultState extends State<InputDefault> {
               if (value == null || value.isEmpty) {
                 return widget.error;
               }
-            } else {
-              return widget.validatorNonDefault;
+            }
+            if (widget.validatorNonDefault != null) {
+              return widget.validatorNonDefault!();
             }
             return null;
           },

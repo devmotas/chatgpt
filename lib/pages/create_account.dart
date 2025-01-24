@@ -76,15 +76,16 @@ class CreateAccount extends StatelessWidget {
   }
 
   String? validatePassword() {
-    if (_checkPasswordEqual()) {
-      return "As senhas não coincidem, tente novamente!";
-    } else if (_checkPassword()) {
-      return "Senha deve ter no mínimo 6 dígitos.";
-    } else if (_confirmPassword.isEmpty) {
-      return "Por favor, confirme a senha.";
-    } else {
-      return null;
+    if (_password.isEmpty || _confirmPassword.isEmpty) {
+      return "Por favor, preencha todos os campos.";
     }
+    if (_password.length < 6) {
+      return "A senha deve ter no mínimo 6 caracteres.";
+    }
+    if (_password != _confirmPassword) {
+      return "As senhas não coincidem.";
+    }
+    return null;
   }
 
   _checkPasswordEqual() {
@@ -176,25 +177,52 @@ class CreateAccount extends StatelessWidget {
                             error: '',
                             iconInput:
                                 const Icon(Icons.lock, color: Colors.white),
-                            keyboard: TextInputType.number,
+                            keyboard: TextInputType.text,
                             onChanged: (value) {
                               _confirmPassword = value;
                             },
-                            validatorNonDefault: validatePassword(),
+                            validatorNonDefault:
+                                validatePassword, // Agora aceita a função diretamente
                           ),
                           const SizedBox(height: 32),
                           ButtonDefault(
-                              text: "Cadastrar",
-                              onPressed: () {
-                                validateInputs();
-                                if (_valid && !_userWaiting) {
-                                  SystemChannels.textInput
-                                      .invokeMethod('TextInput.hide');
-                                  _createUser(context);
-                                }
-                              },
-                              borderOutline: false,
-                              disabled: false),
+                            text: "Cadastrar",
+                            onPressed: () {
+                              // Salvar os valores dos inputs
+                              _formKey1.currentState?.save();
+                              _formKey2.currentState?.save();
+                              _formKey3.currentState?.save();
+                              _formKey4.currentState?.save();
+
+                              // Exibir os valores dos campos no console
+                              print("Nome: $_username");
+                              print("Email: $_email");
+                              print("Senha: $_password");
+                              print("Confirmar Senha: $_confirmPassword");
+                              print("_valid: $_valid");
+                              print("validatePassword: $validatePassword()");
+                              print("_userWaiting: $_userWaiting");
+
+                              // Validar os campos (apenas após exibir os valores)
+                              validateInputs();
+                              if (_valid &&
+                                  validatePassword() == null &&
+                                  !_userWaiting) {
+                                SystemChannels.textInput
+                                    .invokeMethod('TextInput.hide');
+                                _createUser(context);
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                        'Preencha os campos corretamente.'),
+                                  ),
+                                );
+                              }
+                            },
+                            borderOutline: false,
+                            disabled: false,
+                          ),
                         ],
                       ),
                     ),
