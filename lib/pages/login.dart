@@ -24,6 +24,7 @@ class _LoginState extends State<Login> {
   String _password = "";
   bool _userWaiting = false;
   bool _saveData = false;
+  bool _isObscured = true;
 
   @override
   void initState() {
@@ -188,13 +189,29 @@ class _LoginState extends State<Login> {
                             const SizedBox(height: 30),
                             TextFormField(
                               controller: _passwordController,
-                              obscureText: true,
+                              keyboardType:
+                                  const TextInputType.numberWithOptions(
+                                      decimal: false, signed: false),
+                              obscureText: _isObscured,
                               decoration: InputDecoration(
                                 labelText: 'Senha',
                                 labelStyle:
                                     const TextStyle(color: Colors.white),
                                 prefixIcon:
                                     const Icon(Icons.lock, color: Colors.white),
+                                suffixIcon: IconButton(
+                                  icon: Icon(
+                                    _isObscured
+                                        ? Icons.visibility
+                                        : Icons.visibility_off,
+                                    color: Colors.white,
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      _isObscured = !_isObscured;
+                                    });
+                                  },
+                                ),
                                 focusedBorder: OutlineInputBorder(
                                   borderSide:
                                       BorderSide(color: Colors.grey.shade300),

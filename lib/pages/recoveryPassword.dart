@@ -23,7 +23,8 @@ class _RecoveryPasswordState extends State<RecoveryPassword> {
 
   String _email = '';
   bool _userWaiting = false;
-
+  bool _isObscuredNew = true;
+  bool _isObscuredConfirm = true;
   final storage = const FlutterSecureStorage();
 
   @override
@@ -182,7 +183,10 @@ class _RecoveryPasswordState extends State<RecoveryPassword> {
                 children: [
                   TextFormField(
                     controller: _oldPasswordController,
-                    keyboardType: TextInputType.text,
+                    keyboardType: TextInputType.numberWithOptions(
+                      decimal: false,
+                      signed: false,
+                    ),
                     decoration: InputDecoration(
                       labelText: 'Senha antiga',
                       labelStyle: TextStyle(color: Colors.grey[500]),
@@ -202,11 +206,28 @@ class _RecoveryPasswordState extends State<RecoveryPassword> {
                   const SizedBox(height: 16),
                   TextFormField(
                     controller: _newPasswordController,
-                    keyboardType: TextInputType.text,
+                    keyboardType: TextInputType.numberWithOptions(
+                      decimal: false,
+                      signed: false,
+                    ),
+                    obscureText: _isObscuredNew,
                     decoration: InputDecoration(
                       labelText: 'Nova senha',
                       labelStyle: TextStyle(color: Colors.grey[500]),
                       prefixIcon: Icon(Icons.lock, color: Colors.grey[300]),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _isObscuredNew
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                          color: Colors.grey[300],
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _isObscuredNew = !_isObscuredNew;
+                          });
+                        },
+                      ),
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(color: Colors.grey[300]!),
                       ),
@@ -222,11 +243,28 @@ class _RecoveryPasswordState extends State<RecoveryPassword> {
                   const SizedBox(height: 16),
                   TextFormField(
                     controller: _confirmNewPasswordController,
-                    keyboardType: TextInputType.text,
+                    keyboardType: TextInputType.numberWithOptions(
+                      decimal: false,
+                      signed: false,
+                    ),
+                    obscureText: _isObscuredConfirm,
                     decoration: InputDecoration(
                       labelText: 'Confirmar senha',
                       labelStyle: TextStyle(color: Colors.grey[500]),
                       prefixIcon: Icon(Icons.lock, color: Colors.grey[300]),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _isObscuredConfirm
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                          color: Colors.grey[300],
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _isObscuredConfirm = !_isObscuredConfirm;
+                          });
+                        },
+                      ),
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(color: Colors.grey[300]!),
                       ),
