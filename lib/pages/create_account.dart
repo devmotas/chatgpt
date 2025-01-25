@@ -1,11 +1,8 @@
-import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:new_chatgpt/components/buttonDefault.dart';
 import 'package:new_chatgpt/components/inputDefault.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:http/http.dart' as http;
 
 class CreateAccount extends StatelessWidget {
   final _formUser = GlobalKey<FormState>();
@@ -116,20 +113,6 @@ class CreateAccount extends StatelessWidget {
       return "As senhas não coincidem.";
     }
     return null;
-  }
-
-  _checkPasswordEqual() {
-    _formKey2.currentState?.save();
-    _formKey3.currentState?.save();
-    _formKey4.currentState?.save();
-    return !(_password == _confirmPassword);
-  }
-
-  _checkPassword() {
-    _formKey2.currentState?.save();
-    _formKey3.currentState?.save();
-    _formKey4.currentState?.save();
-    return !(_password == _confirmPassword && _password.length >= 6);
   }
 
   @override

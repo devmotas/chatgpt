@@ -20,7 +20,6 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   final TextEditingController _inputController = TextEditingController();
-  String _answer = "";
   List<Map<String, String>> allData = [];
   final apiKey = dotenv.env['API_KEY'];
   String apiUrl = "https://api.openai.com/v1/completions";
@@ -86,7 +85,6 @@ class _HomeState extends State<Home> {
         setState(() {
           allData.last['answer'] = trimmedText;
           allData.last['type'] = decodedResponse['type'];
-          _answer = trimmedText;
         });
 
         pauseDuration = 30 * trimmedText.length;
@@ -95,7 +93,6 @@ class _HomeState extends State<Home> {
         setState(() {
           allData.last['answer'] = decodedResponse['data'];
           allData.last['type'] = decodedResponse['type'];
-          _answer = trimmedText;
         });
         pauseDuration = 20000;
         scrollDown();
@@ -108,7 +105,6 @@ class _HomeState extends State<Home> {
       setState(() {
         allData.last['answer'] = 'Erro ao procurar resposta!';
         allData.last['type'] = 'text';
-        _answer = 'Erro ao procurar resposta';
       });
     }
   }
@@ -133,10 +129,8 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        return false;
-      },
+    return PopScope(
+      canPop: false,
       child: Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,

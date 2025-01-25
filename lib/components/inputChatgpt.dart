@@ -39,6 +39,7 @@ class _InputChatgptState extends State<InputChatgpt> {
     return TextField(
       focusNode: _focusNode,
       controller: widget.inputController,
+      textCapitalization: TextCapitalization.sentences,
       decoration: InputDecoration(
         filled: true,
         fillColor: Color.fromRGBO(47, 50, 49, 1.0),

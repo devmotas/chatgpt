@@ -1,13 +1,11 @@
-import 'package:new_chatgpt/components/recoveryPassword.dart';
+import 'package:new_chatgpt/pages/recoveryPassword.dart';
 import 'package:new_chatgpt/pages/create_account.dart';
 import 'package:new_chatgpt/pages/home.dart';
 import 'package:new_chatgpt/pages/login.dart';
-import 'package:new_chatgpt/pages/privacy_term.dart';
 import 'package:new_chatgpt/pages/user_information.dart';
 import 'package:new_chatgpt/pages/welcome.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:new_chatgpt/pages/welcome.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -29,8 +27,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final OneSignal _oneSignal = OneSignal();
-
   @override
   void initState() {
     super.initState();
@@ -46,6 +42,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       initialRoute: '/welcome',
       routes: {
         '/welcome': (context) => const Welcome(),
@@ -53,7 +50,6 @@ class _MyAppState extends State<MyApp> {
         '/home': (context) => Home(),
         '/createAccount': (context) => CreateAccount(),
         '/userInformation': (context) => const UserInformation(),
-        '/privacyTerm': (context) => const PrivacyTerm(),
         '/recoveryPassword': (context) => const RecoveryPassword(),
       },
     );
