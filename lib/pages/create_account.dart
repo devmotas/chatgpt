@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:new_chatgpt/components/buttonDefault.dart';
 import 'package:new_chatgpt/components/inputDefault.dart';
@@ -18,7 +17,6 @@ class CreateAccount extends StatelessWidget {
   bool _userWaiting = false;
   bool _valid = false;
 
-  final GlobalKey<FormState> _formKey1 = GlobalKey<FormState>();
   final GlobalKey<FormState> _formKey2 = GlobalKey<FormState>();
   final GlobalKey<FormState> _formKey3 = GlobalKey<FormState>();
   final GlobalKey<FormState> _formKey4 = GlobalKey<FormState>();
@@ -97,17 +95,14 @@ class CreateAccount extends StatelessWidget {
   }
 
   validateInputs() {
-    _formKey1.currentState?.save();
     _formKey2.currentState?.save();
     _formKey3.currentState?.save();
     _formKey4.currentState?.save();
-
-    bool form1Valid = _formKey1.currentState?.validate() ?? false;
     bool form2Valid = _formKey2.currentState?.validate() ?? false;
     bool form3Valid = _formKey3.currentState?.validate() ?? false;
     bool form4Valid = _formKey4.currentState?.validate() ?? false;
 
-    _valid = form1Valid && form2Valid && form3Valid && form4Valid;
+    _valid = form2Valid && form3Valid && form4Valid;
   }
 
   String? validatePassword() {
@@ -124,7 +119,6 @@ class CreateAccount extends StatelessWidget {
   }
 
   _checkPasswordEqual() {
-    _formKey1.currentState?.save();
     _formKey2.currentState?.save();
     _formKey3.currentState?.save();
     _formKey4.currentState?.save();
@@ -132,7 +126,6 @@ class CreateAccount extends StatelessWidget {
   }
 
   _checkPassword() {
-    _formKey1.currentState?.save();
     _formKey2.currentState?.save();
     _formKey3.currentState?.save();
     _formKey4.currentState?.save();
@@ -165,22 +158,6 @@ class CreateAccount extends StatelessWidget {
                       autovalidateMode: AutovalidateMode.onUserInteraction,
                       child: Column(
                         children: [
-                          const Icon(
-                            Icons.person,
-                            size: 100,
-                            color: Colors.white,
-                          ),
-                          const SizedBox(height: 16),
-                          InputDefault(
-                            formKey: _formKey1,
-                            label: "Nome",
-                            error: "Por favor insira seu nome",
-                            iconInput:
-                                const Icon(Icons.person, color: Colors.white),
-                            onChanged: (value) {
-                              _username = value;
-                            },
-                          ),
                           const SizedBox(height: 16),
                           InputDefault(
                             formKey: _formKey2,
@@ -223,22 +200,9 @@ class CreateAccount extends StatelessWidget {
                           ButtonDefault(
                             text: "Cadastrar",
                             onPressed: () {
-                              // Salvar os valores dos inputs
-                              _formKey1.currentState?.save();
                               _formKey2.currentState?.save();
                               _formKey3.currentState?.save();
                               _formKey4.currentState?.save();
-
-                              // Exibir os valores dos campos no console
-                              print("Nome: $_username");
-                              print("Email: $_email");
-                              print("Senha: $_password");
-                              print("Confirmar Senha: $_confirmPassword");
-                              print("_valid: $_valid");
-                              print("validatePassword: $validatePassword()");
-                              print("_userWaiting: $_userWaiting");
-
-                              // Validar os campos (apenas após exibir os valores)
                               validateInputs();
                               if (_valid &&
                                   validatePassword() == null &&

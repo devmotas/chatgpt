@@ -22,8 +22,8 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   final storage = const FlutterSecureStorage();
-  final GlobalKey<FormState> _formKey1 = GlobalKey<FormState>();
-  final GlobalKey<FormState> _formKey2 = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey =
+      GlobalKey<FormState>(); // Apenas uma chave
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   String _username = "";
@@ -34,117 +34,98 @@ class _LoginState extends State<Login> {
   @override
   void initState() {
     super.initState();
-    setState(() {
-      _username = '';
-      _password = '';
-      _saveData = false;
-      _usernameController.text = _username;
-      _passwordController.text = _password;
-    });
-    storage.read(key: 'dataUser').then((value) {
-      if (value != null) {
-        Map<String, dynamic> userCredentials = jsonDecode(value);
-        setState(() {
-          _username = userCredentials['email'];
-          _password = userCredentials['password'];
-          _saveData = true;
-          _usernameController.text = _username;
-          _passwordController.text = _password;
-        });
-        // _login();
-      } else {
-        _saveData = false;
-      }
-    });
+    _loadSavedData();
+  }
+
+  Future<void> _loadSavedData() async {
+    final value = await storage.read(key: 'dataUser');
+    if (value != null) {
+      Map<String, dynamic> userCredentials = jsonDecode(value);
+      setState(() {
+        _username = userCredentials['email'];
+        _password = userCredentials['password'];
+        _saveData = true;
+        _usernameController.text = _username;
+        _passwordController.text = _password;
+      });
+      _login();
+    }
   }
 
   void _login() async {
-    _formKey1.currentState?.save();
-    _formKey2.currentState?.save();
-    SystemChannels.textInput.invokeMethod('TextInput.hide');
-    bool form1Valid = _formKey1.currentState!.validate();
-    bool form2Valid = _formKey2.currentState!.validate();
+    if (!_formKey.currentState!.validate()) return;
 
-    if (form1Valid && form2Valid) {
-      setState(() {
-        _userWaiting = true;
-      });
+    FocusScope.of(context).unfocus();
 
-      try {
-        // Login com Firebase
-        UserCredential userCredential =
-            await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: _username.trim(),
-          password: _password.trim(),
-        );
+    setState(() {
+      _userWaiting = true;
+    });
 
-        // Obter usuário logado
-        User? user = userCredential.user;
+    try {
+      UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: _username.trim(),
+        password: _password.trim(),
+      );
 
-        if (user != null) {
-          // Salvar informações no local storage
-          await storage.write(key: 'user', value: user.uid);
-          await storage.write(key: 'email', value: user.email);
-          await storage.write(key: 'isLoggedBefore', value: 'true');
+      User? user = userCredential.user;
 
-          if (_saveData) {
-            await storage.write(
-              key: 'dataUser',
-              value: jsonEncode({'email': _username, 'password': _password}),
-            );
-          } else {
-            await storage.delete(key: 'dataUser');
-          }
+      if (user != null) {
+        await storage.write(key: 'user', value: user.uid);
+        await storage.write(key: 'email', value: user.email);
+        await storage.write(key: 'isLoggedBefore', value: 'true');
 
-          setState(() {
-            _userWaiting = false;
-            _username = '';
-            _password = '';
-            _saveData = false;
-          });
-
-          Navigator.pushNamed(context, '/home');
+        if (_saveData) {
+          await storage.write(
+            key: 'dataUser',
+            value: jsonEncode({'email': _username, 'password': _password}),
+          );
         } else {
-          throw FirebaseAuthException(
-              code: 'user-not-found', message: 'Usuário não encontrado.');
-        }
-      } on FirebaseAuthException catch (e) {
-        setState(() {
-          _userWaiting = false;
-        });
-
-        String errorMessage;
-        switch (e.code) {
-          case 'user-not-found':
-            errorMessage = 'Usuário não encontrado.';
-            break;
-          case 'wrong-password':
-            errorMessage = 'Senha incorreta.';
-            break;
-          case 'invalid-email':
-            errorMessage = 'Email inválido.';
-            break;
-          default:
-            errorMessage = 'Erro ao fazer login: ${e.message}';
+          await storage.delete(key: 'dataUser');
         }
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(errorMessage),
-            duration: const Duration(seconds: 2),
-          ),
-        );
-      } catch (e) {
         setState(() {
           _userWaiting = false;
+          _username = '';
+          _password = '';
+          _saveData = false;
         });
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Erro inesperado: ${e.toString()}'),
-            duration: const Duration(seconds: 2),
-          ),
-        );
+
+        Navigator.pushNamed(context, '/home');
+      } else {
+        throw FirebaseAuthException(
+            code: 'user-not-found', message: 'Usuário não encontrado.');
       }
+    } on FirebaseAuthException catch (e) {
+      setState(() {
+        _userWaiting = false;
+      });
+      print(e.code);
+      String errorMessage;
+      switch (e.code) {
+        case "invalid-credential":
+          errorMessage = 'Dados de autenticação inválidos.';
+          break;
+        default:
+          errorMessage = 'Erro inesperado ao fazer login';
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(errorMessage),
+          duration: const Duration(seconds: 2),
+        ),
+      );
+    } catch (e) {
+      setState(() {
+        _userWaiting = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Erro inesperado: ${e.toString()}'),
+          duration: const Duration(seconds: 2),
+        ),
+      );
     }
   }
 
@@ -158,101 +139,122 @@ class _LoginState extends State<Login> {
           color: Colors.white,
         ),
       ),
-      resizeToAvoidBottomInset: true, // Garante ajuste ao teclado
+      resizeToAvoidBottomInset: true,
       body: Stack(
         children: [
           Container(
-            padding: const EdgeInsets.only(left: 20, right: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 20),
             decoration: const BoxDecoration(
               color: Color.fromRGBO(32, 34, 34, 1.0),
             ),
             child: LayoutBuilder(
-              // Calcula o espaço disponível
               builder: (context, constraints) {
                 return SingleChildScrollView(
                   child: ConstrainedBox(
-                    // Garante que o conteúdo ocupe toda a altura
                     constraints: BoxConstraints(
-                      minHeight: constraints
-                          .maxHeight, // Altura mínima = altura da tela
+                      minHeight: constraints.maxHeight, // Garante altura total
                     ),
                     child: IntrinsicHeight(
-                      // Expande os widgets filhos
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          InputDefault(
-                            formKey: _formKey1,
-                            label: 'E-mail',
-                            error: "Por favor insira seu email",
-                            iconInput:
-                                const Icon(Icons.person, color: Colors.white),
-                            onChanged: (value) {
-                              _username = value;
-                            },
-                            keyboard: TextInputType.emailAddress,
-                            controller: _usernameController,
-                          ),
-                          const SizedBox(height: 30),
-                          InputDefault(
-                            formKey: _formKey2,
-                            label: 'Senha',
-                            error: "Por favor insira sua senha",
-                            iconInput:
-                                const Icon(Icons.lock, color: Colors.white),
-                            onChanged: (value) {
-                              _password = value;
-                            },
-                            keyboard: TextInputType.number,
-                            controller: _passwordController,
-                          ),
-                          const SizedBox(height: 10),
-                          Row(
-                            children: [
-                              Switch(
-                                value: _saveData,
-                                activeColor: Colors.grey,
-                                onChanged: (bool value) {
-                                  setState(() {
-                                    _saveData = value;
-                                  });
-                                },
-                              ),
-                              const Text(
-                                'Lembrar de mim',
-                                style: TextStyle(
-                                  color: Colors.white,
+                      child: Form(
+                        key: _formKey,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            TextFormField(
+                              controller: _usernameController,
+                              keyboardType: TextInputType.emailAddress,
+                              decoration: InputDecoration(
+                                labelText: 'E-mail',
+                                labelStyle:
+                                    const TextStyle(color: Colors.white),
+                                prefixIcon: const Icon(Icons.person,
+                                    color: Colors.white),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: Colors.grey.shade300),
                                 ),
-                              )
-                            ],
-                          ),
-                          const SizedBox(height: 42),
-                          ButtonDefault(
-                            text: 'ENTRAR',
-                            onPressed: () {
-                              if (_formKey1.currentState!.validate() &&
-                                  _formKey2.currentState!.validate() &&
-                                  !_userWaiting) {
-                                _login();
-                              }
-                            },
-                            borderOutline: false,
-                            disabled: false,
-                          ),
-                          const SizedBox(height: 30),
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.pushNamed(context, '/createAccount');
-                            },
-                            child: const Text(
-                              "Não tem uma conta ?",
-                              style: TextStyle(
-                                color: Colors.white,
-                                decoration: TextDecoration.underline,
+                                enabledBorder: const OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.white54),
+                                ),
                               ),
+                              style: const TextStyle(color: Colors.white),
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Por favor insira seu email';
+                                }
+                                final emailRegex =
+                                    RegExp(r'^[^@]+@[^@]+\.[^@]+$');
+                                if (!emailRegex.hasMatch(value)) {
+                                  return 'Insira um email válido';
+                                }
+                                return null;
+                              },
+                              onChanged: (value) => _username = value,
                             ),
-                          ),
-                        ],
+                            const SizedBox(height: 30),
+                            TextFormField(
+                              controller: _passwordController,
+                              obscureText: true,
+                              decoration: InputDecoration(
+                                labelText: 'Senha',
+                                labelStyle:
+                                    const TextStyle(color: Colors.white),
+                                prefixIcon:
+                                    const Icon(Icons.lock, color: Colors.white),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: Colors.grey.shade300),
+                                ),
+                                enabledBorder: const OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.white54),
+                                ),
+                              ),
+                              style: const TextStyle(color: Colors.white),
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Por favor insira sua senha';
+                                }
+                                if (value.length < 6) {
+                                  return 'A senha deve ter pelo menos 6 caracteres';
+                                }
+                                return null;
+                              },
+                              onChanged: (value) => _password = value,
+                            ),
+                            const SizedBox(height: 10),
+                            Row(
+                              children: [
+                                Switch(
+                                  value: _saveData,
+                                  activeColor: Colors.grey,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      _saveData = value;
+                                    });
+                                  },
+                                ),
+                                const Text(
+                                  'Lembrar de mim',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 42),
+                            ButtonDefault(
+                              text: 'ENTRAR',
+                              onPressed: () {
+                                if (_formKey.currentState!.validate() &&
+                                    !_userWaiting) {
+                                  FocusScope.of(context)
+                                      .unfocus(); // Fecha o teclado
+                                  _login();
+                                }
+                              },
+                              borderOutline: false,
+                              disabled: false,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),

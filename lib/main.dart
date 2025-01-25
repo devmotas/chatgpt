@@ -1,10 +1,8 @@
-import 'package:new_chatgpt/pages/change_photo.dart';
-import 'package:new_chatgpt/pages/change_theme.dart';
+import 'package:new_chatgpt/components/recoveryPassword.dart';
 import 'package:new_chatgpt/pages/create_account.dart';
 import 'package:new_chatgpt/pages/home.dart';
 import 'package:new_chatgpt/pages/login.dart';
 import 'package:new_chatgpt/pages/privacy_term.dart';
-import 'package:new_chatgpt/pages/profile.dart';
 import 'package:new_chatgpt/pages/user_information.dart';
 import 'package:new_chatgpt/pages/welcome.dart';
 import 'package:flutter/material.dart';
@@ -36,6 +34,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
+    initPlatformState();
   }
 
   final ThemeData myTheme = ThemeData(
@@ -52,18 +51,16 @@ class _MyAppState extends State<MyApp> {
         '/welcome': (context) => const Welcome(),
         '/login': (context) => const Login(),
         '/home': (context) => Home(),
-        '/profile': (context) => Profile(),
         '/createAccount': (context) => CreateAccount(),
         '/userInformation': (context) => const UserInformation(),
         '/privacyTerm': (context) => const PrivacyTerm(),
-        '/changeTheme': (context) => const ChangeTheme(),
-        '/changePhoto': (context) => const ChangePhoto(),
+        '/recoveryPassword': (context) => const RecoveryPassword(),
       },
     );
   }
 
   Future<void> initPlatformState() async {
-    OneSignal.initialize("your-app-id");
+    OneSignal.initialize("1c933417-2c70-4ac9-ae65-57bbf99cd19c");
     bool hasPermission = await OneSignal.Notifications.requestPermission(false);
     if (!hasPermission) {
       debugPrint("Permissão para notificações não concedida.");

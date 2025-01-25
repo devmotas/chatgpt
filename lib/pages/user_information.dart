@@ -1,8 +1,5 @@
-import 'dart:convert';
-
 import 'package:new_chatgpt/components/buttonDefault.dart';
 import 'package:new_chatgpt/components/cardInformationUser.dart';
-import 'package:new_chatgpt/components/recoveryPassword.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -16,31 +13,73 @@ class UserInformation extends StatefulWidget {
 }
 
 class _UserInformationState extends State<UserInformation> {
+  final storage = const FlutterSecureStorage();
+
   Map<String, dynamic> storedUser = {};
-  String _name = '';
   String _email = '';
 
-  recoveryPassword() {
-    showModalBottomSheet(
-      isScrollControlled: true,
+  void _exitApp(BuildContext context) {
+    showDialog(
       context: context,
-      builder: (context) {
-        return RecoveryPassword(
-          user: storedUser,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text(
+            'Tem certeza que deseja sair?',
+            style:
+                TextStyle(color: Color.fromRGBO(32, 34, 34, 1.0), fontSize: 16),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text(
+                'Sim',
+                style: TextStyle(
+                  color: Color.fromRGBO(204, 204, 204, 1.0),
+                ),
+              ),
+              onPressed: () {
+                exit();
+              },
+            ),
+            TextButton(
+              child: const Text(
+                'Não',
+                style: TextStyle(
+                  color: Color.fromRGBO(32, 34, 34, 1.0),
+                ),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20.0),
+          ),
         );
       },
     );
   }
 
+  exit() async {
+    await widget.storage.write(key: 'isLoggedBefore', value: 'false');
+    await widget.storage.delete(key: 'dataUser');
+    await widget.storage.delete(key: 'user');
+    await widget.storage.delete(key: 'email');
+    Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+  }
+
   @override
   void initState() {
     super.initState();
-    widget.storage.read(key: 'user').then((value) {
-      setState(() {
-        storedUser = jsonDecode(value!);
-        _name = storedUser['name'];
-        _email = storedUser['email'];
-      });
+    _initializeUserData();
+  }
+
+  Future<void> _initializeUserData() async {
+    String? email = await storage.read(key: 'email');
+    setState(() {
+      _email = email ?? '';
+      storedUser = {'email': _email};
     });
   }
 
@@ -50,6 +89,17 @@ class _UserInformationState extends State<UserInformation> {
       appBar: AppBar(
         backgroundColor: const Color.fromRGBO(32, 34, 34, 1.0),
         automaticallyImplyLeading: true,
+        iconTheme: const IconThemeData(
+          color: Colors.white,
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.exit_to_app, color: Colors.red),
+            onPressed: () {
+              _exitApp(context);
+            },
+          )
+        ],
       ),
       body: Container(
         padding: EdgeInsets.fromLTRB(
@@ -63,10 +113,6 @@ class _UserInformationState extends State<UserInformation> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             CardInformationUser(
-                data: _name,
-                label: 'Nome',
-                icon: const Icon(Icons.person, color: Colors.black)),
-            CardInformationUser(
                 data: _email,
                 label: 'Email',
                 icon: const Icon(Icons.email, color: Colors.black)),
@@ -78,7 +124,9 @@ class _UserInformationState extends State<UserInformation> {
                 height: 50,
                 child: ButtonDefault(
                   text: 'Alterar senha',
-                  onPressed: recoveryPassword,
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/recoveryPassword');
+                  },
                   borderOutline: false,
                   disabled: false,
                 ),

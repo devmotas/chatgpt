@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
+import 'package:new_chatgpt/pages/user_information.dart';
 
 import '../components/homeIntroduction.dart';
 import '../components/inputChatgpt.dart';
@@ -146,7 +147,13 @@ class _HomeState extends State<Home> {
               child: InkWell(
                 child: const Icon(Icons.account_circle_rounded,
                     color: Colors.white),
-                onTap: () => {Navigator.pushNamed(context, '/profile')},
+                onTap: () => {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const UserInformation()),
+                  )
+                },
               ),
             ),
           ],

@@ -14,8 +14,11 @@ class ClearChat extends StatelessWidget {
           margin: const EdgeInsets.only(bottom: 16),
           child: FloatingActionButton(
             onPressed: clear,
-            backgroundColor: Colors.red,
-            child: const Icon(Icons.delete),
+            backgroundColor: Colors.grey.shade800,
+            child: const Icon(
+              Icons.delete,
+              color: Colors.redAccent,
+            ),
           ),
         ),
       ],
