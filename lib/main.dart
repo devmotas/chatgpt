@@ -11,8 +11,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:new_chatgpt/pages/welcome.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   await dotenv.load();
   runApp(const MyApp());
 }
@@ -25,12 +31,11 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  // final oneSignalAppId = dotenv.env['API_KEY'];
+  final OneSignal _oneSignal = OneSignal();
 
   @override
   void initState() {
     super.initState();
-    initPlatformState();
   }
 
   final ThemeData myTheme = ThemeData(
@@ -58,11 +63,11 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> initPlatformState() async {
-    //   await OneSignal.shared.setAppId("oneSignalAppId!");
-    //   await OneSignal.shared.consentGranted(true); // Set privacy consent to true
-    //   OneSignal.shared
-    //       .setNotificationOpenedHandler((OSNotificationOpenedResult result) {
-    //     // Handle notification opened
-    //   });
+    OneSignal.initialize("your-app-id");
+    bool hasPermission = await OneSignal.Notifications.requestPermission(false);
+    if (!hasPermission) {
+      debugPrint("Permissão para notificações não concedida.");
+    }
+    await OneSignal.Notifications.lifecycleInit();
   }
 }

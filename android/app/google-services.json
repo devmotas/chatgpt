@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "872889034627",
+    "project_id": "chatgpt-workspace",
+    "storage_bucket": "chatgpt-workspace.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:872889034627:android:ac5e77d851bad5587e78b6",
+        "android_client_info": {
+          "package_name": "com.example.new_chatgpt"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC5MFZicFC7CHYyEWVUdHThFn_Ax-NH7WI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

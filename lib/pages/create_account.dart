@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:new_chatgpt/components/buttonDefault.dart';
 import 'package:new_chatgpt/components/inputDefault.dart';
 import 'package:flutter/material.dart';
@@ -24,40 +25,74 @@ class CreateAccount extends StatelessWidget {
 
   CreateAccount({super.key});
 
-  void _createUser(context) async {
+  void _createUser(BuildContext context) async {
     _userWaiting = true;
     _formUser.currentState?.save();
-    final apiUrl = dotenv.env['API_URL'];
 
-    final response = await http.post(
-      Uri.parse('${apiUrl!}/create-user'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, String>{
-        'name': _username,
-        'email': _email,
-        'password': _password,
-      }),
-    );
-    if (response.statusCode == 200) {
+    try {
+      // Criação de usuário com Firebase
+      UserCredential userCredential =
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: _email.trim(),
+        password: _password.trim(),
+      );
+
+      // Obter o usuário criado
+      User? user = userCredential.user;
+
+      if (user != null) {
+        // Atualizar o nome do usuário
+        await user.updateDisplayName(_username);
+
+        // Exibir mensagem de sucesso
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Usuário criado com sucesso'),
+            duration: Duration(seconds: 3),
+          ),
+        );
+
+        // Aguardar e redirecionar para a página de login
+        await Future.delayed(const Duration(seconds: 3));
+        Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+      } else {
+        throw FirebaseAuthException(
+            code: 'unknown-error', message: 'Erro ao criar usuário.');
+      }
+    } on FirebaseAuthException catch (e) {
+      // Tratamento de erros do Firebase
+      String errorMessage;
+      switch (e.code) {
+        case 'email-already-in-use':
+          errorMessage = 'O email já está em uso.';
+          break;
+        case 'invalid-email':
+          errorMessage = 'Email inválido.';
+          break;
+        case 'weak-password':
+          errorMessage = 'A senha é muito fraca.';
+          break;
+        default:
+          errorMessage = 'Erro ao criar usuário: ${e.message}';
+      }
+
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Usuário criado com sucesso'),
-          duration: Duration(seconds: 3),
+        SnackBar(
+          content: Text(errorMessage),
+          duration: const Duration(seconds: 3),
         ),
       );
-      await Future.delayed(const Duration(seconds: 3));
-      Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
-    } else {
+    } catch (e) {
+      // Tratamento de erros gerais
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Erro inesperado: ${e.toString()}'),
+          duration: const Duration(seconds: 3),
+        ),
+      );
+    } finally {
+      // Atualizar o estado de carregamento
       _userWaiting = false;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Erro ao criar usuário, tente novamente mais tarde.'),
-          duration: Duration(seconds: 2),
-        ),
-      );
-      await Future.delayed(const Duration(seconds: 2));
     }
   }
 

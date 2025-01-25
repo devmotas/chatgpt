@@ -7,7 +7,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
-
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../components/buttonDefault.dart';
 import '../components/inputDefault.dart';
 
@@ -68,68 +70,80 @@ class _LoginState extends State<Login> {
         _userWaiting = true;
       });
 
-      final apiUrl = dotenv.env['API_URL'];
-      final dataUser = jsonEncode(<String, String>{
-        'email': _username,
-        'password': _password,
-      });
-      final response = await http.post(Uri.parse('$apiUrl/login'),
-          headers: <String, String>{
-            'Content-Type': 'application/json; charset=UTF-8',
-          },
-          body: dataUser);
+      try {
+        // Login com Firebase
+        UserCredential userCredential =
+            await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: _username.trim(),
+          password: _password.trim(),
+        );
 
-      if (response.statusCode == 200) {
-        final jsonResponse = jsonDecode(response.body);
-        final user = jsonResponse['user'];
+        // Obter usuário logado
+        User? user = userCredential.user;
 
-        if (user['authorization'] == 0 || user['authorization'] == 1) {
-          await storage.write(key: 'user', value: jsonEncode(user));
-          await storage.write(
-              key: 'profile_image', value: user['profile_image']);
+        if (user != null) {
+          // Salvar informações no local storage
+          await storage.write(key: 'user', value: user.uid);
+          await storage.write(key: 'email', value: user.email);
           await storage.write(key: 'isLoggedBefore', value: 'true');
 
           if (_saveData) {
-            await storage.write(key: 'dataUser', value: dataUser);
+            await storage.write(
+              key: 'dataUser',
+              value: jsonEncode({'email': _username, 'password': _password}),
+            );
           } else {
             await storage.delete(key: 'dataUser');
           }
+
           setState(() {
             _userWaiting = false;
             _username = '';
             _password = '';
             _saveData = false;
           });
+
           Navigator.pushNamed(context, '/home');
         } else {
-          setState(() {
-            _username = '';
-            _password = '';
-            _userWaiting = false;
-          });
-          _formKey1.currentState?.reset();
-          _formKey2.currentState?.reset();
-
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text(
-                  'Você está cadastrado, mas não tem autorização para entrar.'),
-              duration: Duration(seconds: 3),
-            ),
-          );
-          await Future.delayed(const Duration(seconds: 3));
+          throw FirebaseAuthException(
+              code: 'user-not-found', message: 'Usuário não encontrado.');
         }
-      } else {
+      } on FirebaseAuthException catch (e) {
+        setState(() {
+          _userWaiting = false;
+        });
+
+        String errorMessage;
+        switch (e.code) {
+          case 'user-not-found':
+            errorMessage = 'Usuário não encontrado.';
+            break;
+          case 'wrong-password':
+            errorMessage = 'Senha incorreta.';
+            break;
+          case 'invalid-email':
+            errorMessage = 'Email inválido.';
+            break;
+          default:
+            errorMessage = 'Erro ao fazer login: ${e.message}';
+        }
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(errorMessage),
+            duration: const Duration(seconds: 2),
+          ),
+        );
+      } catch (e) {
         setState(() {
           _userWaiting = false;
         });
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Usuário inválido.'),
-            duration: Duration(seconds: 2),
+          SnackBar(
+            content: Text('Erro inesperado: ${e.toString()}'),
+            duration: const Duration(seconds: 2),
           ),
         );
-        await Future.delayed(const Duration(seconds: 2));
       }
     }
   }
