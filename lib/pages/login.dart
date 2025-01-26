@@ -100,6 +100,13 @@ class _LoginState extends State<Login> {
       switch (e.code) {
         case "invalid-credential":
           errorMessage = 'Dados de autenticação inválidos.';
+          setState(() {
+            _saveData = false;
+            storage.delete(key: 'dataUser');
+            storage.delete(key: 'isLoggedBefore');
+            storage.delete(key: 'user');
+            storage.delete(key: 'email');
+          });
           break;
         default:
           errorMessage = 'Erro inesperado ao fazer login';
