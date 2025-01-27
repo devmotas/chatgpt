@@ -1,11 +1,12 @@
+import 'package:fl_downloader/fl_downloader.dart';
+import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:animated_text_kit/animated_text_kit.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show rootBundle;
 import 'package:path_provider/path_provider.dart';
+import 'package:http/http.dart' as http;
+import 'package:share_plus/share_plus.dart';
 
 class Answers extends StatelessWidget {
   List<Map<String, String>> allData = [];
@@ -13,19 +14,53 @@ class Answers extends StatelessWidget {
 
   Answers({required this.allData, required this.index, super.key});
 
-  Future<void> downloadImage(String image) async {}
+  Future<void> downloadImage(BuildContext context, String imageUrl) async {
+    try {
+      await FlDownloader.initialize();
 
-  Future<void> shareImage(image) async {
-    final ByteData imageData = await rootBundle.load('assets/images/user.png');
-    final List<int> bytes = imageData.buffer.asUint8List();
+      FlDownloader.progressStream.listen((DownloadProgress progress) {
+        debugPrint('Progresso: ${progress.progress}%');
+      });
 
-    final Directory tempDir = await getTemporaryDirectory();
-    final String tempPath = tempDir.path;
-    final File imageFile = File('$tempPath/image.jpg');
-    await imageFile.writeAsBytes(bytes);
-    final String filePath = imageFile.path;
+      final fileName = 'downloaded_image.jpg'; // Nome do arquivo salvo
+      await FlDownloader.download(
+        imageUrl,
+        fileName: fileName,
+      );
 
-    // await AppinioSocialShare.shareToWhatsapp('message', filePath: filePath);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Download iniciado!'),
+        ),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Erro ao fazer o download: ${e.toString()}'),
+        ),
+      );
+    }
+  }
+
+  Future<void> shareImage(String? imageUrl) async {
+    try {
+      if (imageUrl == null || imageUrl.isEmpty) return;
+      final response = await http.get(Uri.parse(imageUrl));
+
+      if (response.statusCode == 200) {
+        final tempDir = await getTemporaryDirectory();
+        final tempPath = tempDir.path;
+
+        final file = File('$tempPath/shared_image.png');
+        await file.writeAsBytes(response.bodyBytes);
+
+        await Share.shareXFiles([XFile(file.path)], text: 'Veja esta imagem!');
+      } else {
+        throw Exception('Erro ao baixar a imagem');
+      }
+    } catch (e) {
+      print('Erro ao compartilhar a imagem');
+    }
   }
 
   @override
@@ -84,7 +119,8 @@ class Answers extends StatelessWidget {
                                 elevation: 8.0,
                               ).then((value) {
                                 if (value == 'download') {
-                                  downloadImage(allData[index]['answer']!);
+                                  downloadImage(
+                                      context, allData[index]['answer']!);
                                 } else if (value == 'share') {
                                   shareImage(allData[index]['answer']);
                                 }
